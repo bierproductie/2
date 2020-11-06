@@ -1,0 +1,19 @@
+# IDE settings
+.vscode/
+.idea/
+
+# Java class files
+*.class
+
+# Single files
+.classpath
+.project
+.settings
+
+# Target Folder
+target/ 
+
+# Bin folder
+bin/
+
+
