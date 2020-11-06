@@ -12,7 +12,7 @@ import java.util.concurrent.ExecutionException;
 
 public class Client {
 
-    private OpcUaClient client;
+    private OpcUaClient opcUaClient;
 
     public Client(String endpointURL) {
         try {
@@ -22,8 +22,8 @@ public class Client {
             OpcUaClientConfigBuilder ocb = new OpcUaClientConfigBuilder();
             ocb.setEndpoint(endpoints.get(0));
 
-            client = OpcUaClient.create(ocb.build());
-            client.connect().get();
+            opcUaClient = OpcUaClient.create(ocb.build());
+            opcUaClient.connect().get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -41,8 +41,8 @@ public class Client {
             OpcUaClientConfigBuilder ocb = new OpcUaClientConfigBuilder().setIdentityProvider(new UsernameProvider(username,password));
             ocb.setEndpoint(endpoints.get(0));
 
-            client = OpcUaClient.create(ocb.build());
-            client.connect().get();
+            opcUaClient = OpcUaClient.create(ocb.build());
+            opcUaClient.connect().get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -52,7 +52,7 @@ public class Client {
         }
     }
 
-    public OpcUaClient getClient() {
-        return client;
+    public OpcUaClient getOpcUaClient() {
+        return opcUaClient;
     }
 }
