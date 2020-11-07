@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import dk.bierproductie.opc_ua_client.core.*;
 
-public class ClientTest {
+class ClientTest {
     Client client;
     public ClientTest(){
     }
