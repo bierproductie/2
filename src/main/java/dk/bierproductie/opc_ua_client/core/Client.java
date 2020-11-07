@@ -9,50 +9,46 @@ import org.eclipse.milo.opcua.stack.core.types.structured.EndpointDescription;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Client {
-    private OpcUaClient opcUaClient;
-    private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-    public Client(String endpointURL) throws ConfigException, InterruptedException {
-        this(endpointURL, null, null);
+    private OpcUaClient opcUaClient;
+
+    public Client(String endpointURL) {
+        try {
+            List<EndpointDescription> endpoints = DiscoveryClient.getEndpoints(endpointURL).get();
+            System.out.println("Connecting to Endpoint: " + endpoints.get(0));
+
+            OpcUaClientConfigBuilder ocb = new OpcUaClientConfigBuilder();
+            ocb.setEndpoint(endpoints.get(0));
+
+            opcUaClient = OpcUaClient.create(ocb.build());
+            opcUaClient.connect().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (UaException e) {
+            e.printStackTrace();
+        }
     }
 
-    public Client(String endpointURL, String username, String password) throws ConfigException, InterruptedException {
-        List<EndpointDescription> endpoints = null;
+    public Client(String endpointURL, String username, String password) {
         try {
-            endpoints = DiscoveryClient.getEndpoints(endpointURL).get();
-            LOGGER.log(Level.INFO, "Connection to Endpoint: {}", endpoints.get(0));
-        } catch (InterruptedException e){
-            LOGGER.log(Level.WARNING, "InterruptedException: {}", e.toString());
-            Thread.currentThread().interrupt();
-        } catch (ExecutionException e){
-            throw new ConfigException("Check endpoint, check connection to the server");
-        }
-        OpcUaClientConfigBuilder ocb = new OpcUaClientConfigBuilder();
-        if (username != null && !username.equals("")) {
-            ocb.setIdentityProvider(new UsernameProvider(username, password));
-        }
-        
-        if(endpoints == null) {
-            throw new ConfigException("Could not get end points, check connection?");
-        } else {
+            List<EndpointDescription> endpoints = DiscoveryClient.getEndpoints(endpointURL).get();
+            System.out.println("Connecting to Endpoint: " + endpoints.get(0));
+
+            OpcUaClientConfigBuilder ocb = new OpcUaClientConfigBuilder().setIdentityProvider(new UsernameProvider(username,password));
             ocb.setEndpoint(endpoints.get(0));
-        }
-        try { 
+
             opcUaClient = OpcUaClient.create(ocb.build());
-        } catch(UaException e){
-            LOGGER.log(Level.WARNING, "Got an UaException: {}", e.toString());
-        }
-        try {
             opcUaClient.connect().get();
-        } catch (InterruptedException e){
-            LOGGER.log(Level.WARNING, "InterruptedException: {}", e.toString());
-            Thread.currentThread().interrupt();
-        } catch (ExecutionException e){
-            LOGGER.log(Level.WARNING, "Check endpoint or check connection to the server or wrong user");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (UaException e) {
+            e.printStackTrace();
         }
     }
 
