@@ -4,7 +4,7 @@ public enum Products {
     PILSNER("Pilsner"),
     WHEAT("Wheat"),
     IPA("IPA"),
-    Stout("Stout"),
+    STOUT("Stout"),
     ALE("Ale"),
     ALCOHOL_FREE("Alcohol Free");
 
