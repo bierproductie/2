@@ -17,7 +17,7 @@ public class Client {
 
     private OpcUaClient opcUaClient;
 
-    public Client(String endpointURL) {
+    public Client(String endpointURL) throws InterruptedException {
         try {
             List<EndpointDescription> endpoints = DiscoveryClient.getEndpoints(endpointURL).get();
             LOGGER.log(Level.INFO, "Connecting to Endpoint: {}", endpoints.get(0));
@@ -27,12 +27,14 @@ public class Client {
 
             opcUaClient = OpcUaClient.create(ocb.build());
             opcUaClient.connect().get();
-        } catch (InterruptedException | ExecutionException | UaException e) {
+        } catch (ExecutionException | UaException e) {
             LOGGER.log(Level.WARNING, "Error on connecting to OPC: {}", e.toString());
+        } catch (InterruptedException e){
+            Thread.currentThread().interrupt();
         }
     }
 
-    public Client(String endpointURL, String username, String password) {
+    public Client(String endpointURL, String username, String password) throws InterruptedException {
         try {
             List<EndpointDescription> endpoints = DiscoveryClient.getEndpoints(endpointURL).get();
             LOGGER.log(Level.INFO, "Connecting to Endpoint: {}", endpoints.get(0));
@@ -42,8 +44,10 @@ public class Client {
 
             opcUaClient = OpcUaClient.create(ocb.build());
             opcUaClient.connect().get();
-        } catch (InterruptedException | ExecutionException | UaException e) {
+        } catch (ExecutionException | UaException e) {
             LOGGER.log(Level.WARNING, "Error on connecting to OPC: {}", e.toString());
+        } catch (InterruptedException e){
+            Thread.currentThread().interrupt();
         }
     }
 
