@@ -9,12 +9,16 @@
 
 <properties>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <project.java.version>8</project.java.version>
+    <project.java.version>14</project.java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <maven.compiler.source>${project.java.version}</maven.compiler.source>
     <maven.compiler.target>${project.java.version}</maven.compiler.target>
 
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.projectKey>bierproductie_OPC-UA_client</sonar.projectKey>
+    <sonar.organization>bierproductie</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 </properties>
 
 <dependencies>
@@ -49,5 +53,37 @@
         <version>3.2.0</version>
     </dependency>
 </dependencies>
+<!-- Build! -->
+<build>
+    <plugins>
+        <!-- Build -> plugin -> surefire -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.0.0-M5</version>
+        </plugin>
+        <!-- Build -> plugin -> jacoco -->
+        <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.6</version>
+            <executions>
+                <execution>
+                    <id>coverage-initialize</id>
+                    <goals>
+                        <goal>prepare-agent</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>coverage-report</id>
+                    <phase>post-integration-test</phase>
+                    <goals>
+                        <goal>report</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
 
 </project>
