@@ -11,5 +11,5 @@ class CommandsTest {
     void values() {
         assertNotNull(Commands.values());
     }
-    
+
 }
