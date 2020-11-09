@@ -11,9 +11,5 @@ class CommandsTest {
     void values() {
         assertNotNull(Commands.values());
     }
-
-    @Test
-    void valueOf() {
-        assertNotNull(Commands.valueOf("ZERO"));
-    }
+    
 }
