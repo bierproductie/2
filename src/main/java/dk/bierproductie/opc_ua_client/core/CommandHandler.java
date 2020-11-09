@@ -6,6 +6,7 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
 
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,18 +20,16 @@ public class CommandHandler {
         this.client = client;
     }
 
-    public void executeCommand() {
+    public void executeCommand() throws ExecutionException, InterruptedException {
         NodeId nodeId = CommandNodes.EXECUTE_MACHINE_COMMAND.nodeId;
-        Variant cmdExecVariant = new Variant(true);
-        DataValue cmdExecDataValue = new DataValue(cmdExecVariant);
-        client.getOpcUaClient().writeValue(nodeId, cmdExecDataValue);
+        Variant variant = new Variant(true);
+        client.getOpcUaClient().writeValue(nodeId, DataValue.valueOnly(variant)).get();
     }
 
-    public void setCommand(Commands command) {
+    public void setCommand(Commands command) throws ExecutionException, InterruptedException {
         NodeId nodeId = CommandNodes.SET_MACHINE_COMMAND.nodeId;
-        Variant cmdVariant = new Variant(command.ordinal());
-        DataValue cmdDataValue = new DataValue(cmdVariant);
-        client.getOpcUaClient().writeValue(nodeId, cmdDataValue);
+        Variant variant = new Variant(command.ordinal());
+        client.getOpcUaClient().writeValue(nodeId, DataValue.valueOnly(variant)).get();
         executeCommand();
         String message = String.format("Executed command: %s %d", command,command.ordinal());
         LOGGER.log(Level.INFO,message);
