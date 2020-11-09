@@ -7,12 +7,10 @@ import java.util.concurrent.ExecutionException;
 
 public class BatchHandler {
 
-    private Client client;
     private CommandHandler commandHandler;
     private DataWriter dataWriter;
 
     public BatchHandler(Client client) {
-        this.client = client;
         this.commandHandler = new CommandHandler(client);
         this.dataWriter = new DataWriter(client);
     }
