@@ -12,27 +12,27 @@ class BatchTest {
 
     @BeforeEach
     void setUp() {
-        batch = new Batch(1,Products.PILSNER,800,1000);
+        batch = new Batch(1, Products.PILSNER, 800, 1000);
         batch = new Batch(1, Products.PILSNER, 500, 1000);
     }
 
     @Test
     void getId() {
-        assertEquals(batch.getId(), 1);
+        assertEquals(1, batch.getId());
     }
 
     @Test
     void getProductType() {
-        assertEquals(batch.getProductType(), Products.PILSNER.ordinal());
+        assertEquals(Products.PILSNER.ordinal(), batch.getProductType());
     }
 
     @Test
     void getMachineSpeed() {
-        assertEquals(batch.getMachineSpeed(), 500);
+        assertEquals(500, batch.getMachineSpeed());
     }
 
     @Test
     void getAmountToProduce() {
-        assertEquals(batch.getAmountToProduce(),1000);
+        assertEquals(1000, batch.getAmountToProduce());
     }
 }
