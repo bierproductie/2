@@ -1,13 +1,13 @@
-package dk.bierproductie.opc_ua_client.enums;
+package dk.bierproductie.opc_ua_client.enums.node_enums;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class StopReasonsTest {
+class StatusNodesTest {
 
     @Test
     void values() {
-        assertNotNull(StopReasons.values());
+        assertNotNull(StatusNodes.values());
     }
 }

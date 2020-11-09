@@ -1,6 +1,7 @@
 package dk.bierproductie.opc_ua_client.enums;
 
 public enum StopReasons {
+
     EMPTY_INVENTORY(10,"Empty Inventory"),
     MAINTENANCE_NEEDED(11,"Maintenance Needed"),
     MANUAL_STOP(12, "Manual Stop"),
