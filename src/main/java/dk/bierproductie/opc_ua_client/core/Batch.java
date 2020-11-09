@@ -9,8 +9,8 @@ public class Batch {
 
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-    private int id;
-    private int productType;
+    private float id;
+    private float productType;
     private float machineSpeed;
     private float amountToProduce;
     //private int defectiveProducts;
@@ -36,11 +36,11 @@ public class Batch {
         this.amountToProduce = amountToProduce;
     }
 
-    public int getId() {
+    public float getId() {
         return id;
     }
 
-    public int getProductType() {
+    public float getProductType() {
         return productType;
     }
 
