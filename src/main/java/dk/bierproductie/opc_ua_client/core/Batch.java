@@ -21,10 +21,6 @@ public class Batch {
     //private int totalProductAmount
     //private map<double,float> tempOverTime
 
-
-    public Batch() {
-    }
-
     public Batch(int id, Products productType, float machineSpeed, float amountToProduce) {
         this.id = id;
         this.productType = productType.ordinal();
