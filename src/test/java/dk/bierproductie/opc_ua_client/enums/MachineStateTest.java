@@ -10,9 +10,4 @@ class MachineStateTest {
     void values() {
         assertNotNull(MachineState.values());
     }
-
-    @Test
-    void valueOf() {
-        assertNotNull(MachineState.valueOf("DEACTIVATED"));
-    }
 }

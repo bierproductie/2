@@ -10,10 +10,4 @@ class StopReasonsTest {
     void values() {
         assertNotNull(StopReasons.values());
     }
-
-    @Test
-    void valueOf() {
-        assertNotNull(StopReasons.valueOf("EMPTY_INVENTORY"));
-    }
-
 }
