@@ -55,7 +55,7 @@ public class DataCollector {
     }
 
 
-    public void readStopReason() { // TODO: 08-11-2020 needs to me redone when commands are implemented
+    public void readStopReason() {
         NodeId nodeId = AdminNodes.STOP_REASON_VALUE.nodeId;
         try {
             DataValue dataValue = client.getOpcUaClient().readValue(0, TimestampsToReturn.Both, nodeId).get();
