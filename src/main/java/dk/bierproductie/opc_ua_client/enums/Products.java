@@ -1,6 +1,7 @@
 package dk.bierproductie.opc_ua_client.enums;
 
 public enum Products {
+    
     PILSNER("Pilsner", 600),
     WHEAT("Wheat", 300),
     IPA("IPA", 150),

@@ -1,6 +1,7 @@
 package dk.bierproductie.opc_ua_client.enums;
 
 public enum MachineState {
+
     DEACTIVATED("Deactivated"),
     CLEARING("Clearing"),
     STOPPED("Stopped"),
