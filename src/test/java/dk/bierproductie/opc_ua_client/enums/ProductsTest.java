@@ -10,10 +10,4 @@ class ProductsTest {
     void values() {
         assertNotNull(Products.values());
     }
-
-    @Test
-    void valueOf() {
-        assertNotNull(Products.valueOf("PILSNER"));
-    }
-
 }
