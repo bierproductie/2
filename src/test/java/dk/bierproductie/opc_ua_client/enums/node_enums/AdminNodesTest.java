@@ -10,9 +10,4 @@ class AdminNodesTest {
     void values() {
         assertNotNull(AdminNodes.values());
     }
-
-    @Test
-    void valueOf() {
-        assertNotNull(AdminNodes.valueOf(""));
-    }
 }
