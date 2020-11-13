@@ -1,6 +1,5 @@
 package dk.bierproductie.opc_ua_client.core;
 
-import dk.bierproductie.opc_ua_client.enums.node_enums.StatusNodes;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
 import org.eclipse.milo.opcua.stack.core.AttributeId;
@@ -22,9 +21,16 @@ import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Subscription {
+public class Subscription implements Runnable {
     public static final AtomicLong clientHandles = new AtomicLong(1L);
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    private Client client;
+    private NodeId nodeId;
+
+    public Subscription(Client client, NodeId nodeId) {
+        this.client = client;
+        this.nodeId = nodeId;
+    }
 
     private static void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
         String msg = String.format("subscription value received: item=%s, value=%s",
@@ -32,9 +38,7 @@ public class Subscription {
         LOGGER.log(Level.INFO, msg);
     }
 
-    public void subscribe(Client client) throws InterruptedException, ExecutionException {
-        NodeId nodeId = StatusNodes.CURRENT_BATCH_ID.nodeId;
-
+    public void subscribe() throws InterruptedException, ExecutionException {
         // what to read
         ReadValueId readValueId = new ReadValueId(nodeId, AttributeId.Value.uid(), null, null);
 
@@ -75,5 +79,16 @@ public class Subscription {
 
         // let the example run for 50 seconds then terminate
         Thread.sleep(50000);
+    }
+
+    @Override
+    public void run() {
+        try {
+            subscribe();
+        } catch (InterruptedException | ExecutionException e) {
+            String msg = "hmmm";
+            LOGGER.log(Level.WARNING, msg);
+            Thread.currentThread().interrupt();
+        }
     }
 }
