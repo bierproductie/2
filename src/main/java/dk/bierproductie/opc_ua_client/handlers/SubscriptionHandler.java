@@ -2,6 +2,7 @@ package dk.bierproductie.opc_ua_client.handlers;
 
 import dk.bierproductie.opc_ua_client.core.Client;
 import dk.bierproductie.opc_ua_client.core.Subscription;
+import dk.bierproductie.opc_ua_client.enums.SubscriptionType;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 
 public class SubscriptionHandler {
@@ -11,8 +12,8 @@ public class SubscriptionHandler {
         this.client = client;
     }
 
-    public void subscribe(NodeId nodeId) {
-        Thread subscriptionThread = new Thread(new Subscription(client, nodeId));
+    public void subscribe(NodeId nodeId, SubscriptionType subscriptionType) {
+        Thread subscriptionThread = new Thread(new Subscription(client, nodeId, subscriptionType));
         subscriptionThread.start();
     }
 }
