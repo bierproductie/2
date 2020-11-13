@@ -1,9 +1,9 @@
 package dk.bierproductie.opc_ua_client.core;
 
+import dk.bierproductie.opc_ua_client.enums.SubscriptionType;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
 import org.eclipse.milo.opcua.stack.core.AttributeId;
-import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned;
@@ -26,16 +26,12 @@ public class Subscription implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private Client client;
     private NodeId nodeId;
+    private SubscriptionType subscriptionType;
 
-    public Subscription(Client client, NodeId nodeId) {
+    public Subscription(Client client, NodeId nodeId, SubscriptionType subscriptionType) {
         this.client = client;
         this.nodeId = nodeId;
-    }
-
-    private static void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
-        String msg = String.format("subscription value received: item=%s, value=%s",
-                item.getReadValueId().getNodeId(), value.getValue());
-        LOGGER.log(Level.INFO, msg);
+        this.subscriptionType = subscriptionType;
     }
 
     public void subscribe() throws InterruptedException, ExecutionException {
@@ -55,8 +51,7 @@ public class Subscription implements Runnable {
         // creation request
         MonitoredItemCreateRequest request = new MonitoredItemCreateRequest(readValueId, MonitoringMode.Reporting, parameters);
 
-        // setting the consumer after the subscription creation
-        BiConsumer<UaMonitoredItem, Integer> onItemCreated = (item, id) -> item.setValueConsumer(Subscription::onSubscriptionValue);
+        BiConsumer<UaMonitoredItem, Integer> onItemCreated = getUaMonitoredItemIntegerBiConsumer();
 
         // create a subscription @ 1000ms
         UaSubscription subscription = client.getOpcUaClient().getSubscriptionManager().createSubscription(1000.0).get();
@@ -79,6 +74,24 @@ public class Subscription implements Runnable {
 
         // let the example run for 50 seconds then terminate
         Thread.sleep(50000);
+    }
+
+    private BiConsumer<UaMonitoredItem, Integer> getUaMonitoredItemIntegerBiConsumer() {
+        // setting the consumer after the subscription creation
+        BiConsumer<UaMonitoredItem, Integer> onItemCreated = null;
+        switch (subscriptionType) {
+            case STANDARD:
+                onItemCreated = (item, id) -> item.setValueConsumer(SubscriptionMethods::onSubscriptionValue);
+                break;
+            case TEMPERATURE:
+                onItemCreated = (item, id) -> item.setValueConsumer(SubscriptionMethods::onSubscriptionTemperatureValue);
+                break;
+            case MACHINE_STATE:
+                break;
+            default:
+                throw new IllegalStateException(String.format("Unexpected value: %s", subscriptionType));
+        }
+        return onItemCreated;
     }
 
     @Override
