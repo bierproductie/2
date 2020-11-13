@@ -1,7 +1,7 @@
 package dk.bierproductie.opc_ua_client;
 
 import dk.bierproductie.opc_ua_client.core.Batch;
-import dk.bierproductie.opc_ua_client.core.BatchHandler;
+import dk.bierproductie.opc_ua_client.handlers.BatchHandler;
 import dk.bierproductie.opc_ua_client.core.Client;
 import dk.bierproductie.opc_ua_client.core.OpcUaClient;
 import dk.bierproductie.opc_ua_client.enums.Products;

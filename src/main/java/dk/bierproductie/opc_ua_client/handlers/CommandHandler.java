@@ -1,5 +1,6 @@
-package dk.bierproductie.opc_ua_client.core;
+package dk.bierproductie.opc_ua_client.handlers;
 
+import dk.bierproductie.opc_ua_client.core.Client;
 import dk.bierproductie.opc_ua_client.enums.Commands;
 import dk.bierproductie.opc_ua_client.enums.node_enums.CommandNodes;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
