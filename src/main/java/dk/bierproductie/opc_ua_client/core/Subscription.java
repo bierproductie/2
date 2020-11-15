@@ -1,10 +1,11 @@
 package dk.bierproductie.opc_ua_client.core;
 
-import dk.bierproductie.opc_ua_client.enums.SubscriptionType;
+import dk.bierproductie.opc_ua_client.enums.node_enums.StatusNodes;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
 import org.eclipse.milo.opcua.stack.core.AttributeId;
+import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned;
@@ -52,7 +53,8 @@ public class Subscription implements Runnable {
         // creation request
         MonitoredItemCreateRequest request = new MonitoredItemCreateRequest(readValueId, MonitoringMode.Reporting, parameters);
 
-        BiConsumer<UaMonitoredItem, Integer> onItemCreated = getUaMonitoredItemIntegerBiConsumer();
+        // setting the consumer after the subscription creation
+        BiConsumer<UaMonitoredItem, Integer> onItemCreated = (item, id) -> item.setValueConsumer(Subscription::onSubscriptionValue);
 
         // create a subscription @ 1000ms
         UaSubscription subscription = client.getSubscriptionManager().createSubscription(1000.0).get();
@@ -77,24 +79,6 @@ public class Subscription implements Runnable {
         Thread.sleep(50000);
     }
 
-    private BiConsumer<UaMonitoredItem, Integer> getUaMonitoredItemIntegerBiConsumer() {
-        // setting the consumer after the subscription creation
-        BiConsumer<UaMonitoredItem, Integer> onItemCreated = null;
-        switch (subscriptionType) {
-            case STANDARD:
-                onItemCreated = (item, id) -> item.setValueConsumer(SubscriptionMethods::onSubscriptionValue);
-                break;
-            case TEMPERATURE:
-                onItemCreated = (item, id) -> item.setValueConsumer(SubscriptionMethods::onSubscriptionTemperatureValue);
-                break;
-            case MACHINE_STATE:
-                break;
-            default:
-                throw new IllegalStateException(String.format("Unexpected value: %s", subscriptionType));
-        }
-        return onItemCreated;
-    }
-
     @Override
     public void run() {
         try {
@@ -104,5 +88,16 @@ public class Subscription implements Runnable {
             LOGGER.log(Level.WARNING, msg);
             Thread.currentThread().interrupt();
         }
+    }
+
+    static void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
+        switch (item.getReadValueId().getNodeId()){
+            case (StatusNodes.MACHINE_STATE){
+                
+            }
+        }
+        String msg = String.format("Temperature subscription value received: item=%s, value=%s",
+                item.getReadValueId().getNodeId(), value.getValue());
+        LOGGER.log(Level.INFO, msg);
     }
 }
