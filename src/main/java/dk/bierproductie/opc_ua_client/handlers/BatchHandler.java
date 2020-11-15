@@ -31,7 +31,7 @@ public class BatchHandler {
     }
 
     public void setupSubscriptions(Batch batch) {
-        subscriptionHandler.subscribe(StatusNodes.TEMPERATURE.nodeId, batch, 50000);
+        //  subscriptionHandler.subscribe(StatusNodes.TEMPERATURE.nodeId, batch, 50000);
         //more idk
     }
 }
