@@ -14,7 +14,7 @@ import java.util.logging.Level;
 
 public final class SimulatorClient {
 
-    private static SimulatorClient INSTANCE;
+    private static SimulatorClient instance;
 
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
@@ -38,10 +38,10 @@ public final class SimulatorClient {
     }
 
     public static SimulatorClient getInstance() throws InterruptedException {
-        if (INSTANCE == null){
-            INSTANCE = new SimulatorClient("opc.tcp://127.0.0.1:4840","sdu","1234");
+        if (instance == null){
+            instance = new SimulatorClient("opc.tcp://127.0.0.1:4840","sdu","1234");
         }
-        return INSTANCE;
+        return instance;
     }
 
     public OpcUaClient getOpcUaClient() {

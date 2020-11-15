@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 public final class MachineClient {
 
-    private static MachineClient INSTANCE;
+    private static MachineClient instance;
     private OpcUaClient opcUaClient;
 
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -36,9 +36,9 @@ public final class MachineClient {
     }
 
     public static MachineClient getInstance() throws InterruptedException {
-        if (INSTANCE == null) {
-            INSTANCE = new MachineClient("opc.tcp://127.0.0.1:4840");
+        if (instance == null) {
+            instance = new MachineClient("opc.tcp://127.0.0.1:4840");
         }
-        return INSTANCE;
+        return instance;
     }
 }
