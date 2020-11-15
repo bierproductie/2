@@ -1,7 +1,6 @@
 package dk.bierproductie.opc_ua_client.handlers;
 
 import dk.bierproductie.opc_ua_client.core.Subscription;
-import dk.bierproductie.opc_ua_client.enums.SubscriptionType;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 
