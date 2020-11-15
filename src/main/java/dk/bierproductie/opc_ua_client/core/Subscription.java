@@ -29,7 +29,7 @@ public class Subscription implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private OpcUaClient client;
     private NodeId nodeId;
-    private Batch batch;
+    private static Batch batch;
     private long sleepTime;
 
     public Subscription(OpcUaClient client, NodeId nodeId, Batch batch, long sleepTime) {
@@ -93,12 +93,18 @@ public class Subscription implements Runnable {
         }
     }
 
-    static void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
+    public static void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
         if (item.getReadValueId().getNodeId() == StatusNodes.MACHINE_STATE.nodeId) {
-            String state = MachineState.values()[(int)value.getValue().getValue()].output;
+            String state = MachineState.values()[(int) value.getValue().getValue()].output;
             String msg = String.format("MachineState Subscription value received: item=%s, value=%s, prettyValue=%s",
                     item.getReadValueId().getNodeId(), value.getValue(), state);
             LOGGER.log(Level.INFO, msg);
+            System.out.println(value.getServerTime());
+        } else if (item.getReadValueId().getNodeId() == StatusNodes.TEMPERATURE.nodeId) {
+            String msg = String.format("Temperature Subscription value received: item=%s, value=%s",
+                    item.getReadValueId().getNodeId(), value.getValue());
+            LOGGER.log(Level.INFO, msg);
+            batch.addToTempOverTime(value.getSourceTime(),(Float)value.getValue().getValue());
         } else {
             String msg = String.format("Subscription value received: item=%s, value=%s",
                     item.getReadValueId().getNodeId(), value.getValue());
