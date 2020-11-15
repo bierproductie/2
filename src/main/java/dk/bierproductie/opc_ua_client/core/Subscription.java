@@ -1,6 +1,7 @@
 package dk.bierproductie.opc_ua_client.core;
 
 import dk.bierproductie.opc_ua_client.enums.SubscriptionType;
+import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
 import org.eclipse.milo.opcua.stack.core.AttributeId;
@@ -24,11 +25,11 @@ import java.util.logging.Logger;
 public class Subscription implements Runnable {
     public static final AtomicLong clientHandles = new AtomicLong(1L);
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    private Client client;
+    private OpcUaClient client;
     private NodeId nodeId;
     private SubscriptionType subscriptionType;
 
-    public Subscription(Client client, NodeId nodeId, SubscriptionType subscriptionType) {
+    public Subscription(OpcUaClient client, NodeId nodeId, SubscriptionType subscriptionType) {
         this.client = client;
         this.nodeId = nodeId;
         this.subscriptionType = subscriptionType;
@@ -54,7 +55,7 @@ public class Subscription implements Runnable {
         BiConsumer<UaMonitoredItem, Integer> onItemCreated = getUaMonitoredItemIntegerBiConsumer();
 
         // create a subscription @ 1000ms
-        UaSubscription subscription = client.getOpcUaClient().getSubscriptionManager().createSubscription(1000.0).get();
+        UaSubscription subscription = client.getSubscriptionManager().createSubscription(1000.0).get();
 
         List<UaMonitoredItem> items = subscription.createMonitoredItems(TimestampsToReturn.Both,
                 Collections.singletonList(request),
