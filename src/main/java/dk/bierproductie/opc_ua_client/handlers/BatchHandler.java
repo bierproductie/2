@@ -1,10 +1,9 @@
 package dk.bierproductie.opc_ua_client.handlers;
 
-import dk.bierproductie.opc_ua_client.core.Batch;
-import dk.bierproductie.opc_ua_client.core.Client;
-import dk.bierproductie.opc_ua_client.core.DataWriter;
+import dk.bierproductie.opc_ua_client.clients.SimulatorClient;
 import dk.bierproductie.opc_ua_client.enums.Commands;
 import dk.bierproductie.opc_ua_client.enums.node_enums.CommandNodes;
+import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 
 import java.util.concurrent.ExecutionException;
 
@@ -13,7 +12,7 @@ public class BatchHandler {
     private CommandHandler commandHandler;
     private DataWriter dataWriter;
 
-    public BatchHandler(Client client) {
+    public BatchHandler(OpcUaClient client) {
         this.commandHandler = new CommandHandler(client);
         this.dataWriter = new DataWriter(client);
     }

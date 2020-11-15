@@ -7,6 +7,7 @@ import dk.bierproductie.opc_ua_client.enums.StopReasons;
 import dk.bierproductie.opc_ua_client.enums.node_enums.AdminNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.CommandNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.StatusNodes;
+import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
@@ -22,15 +23,15 @@ public class DataCollector {
     public static final String INTERRUPTED_MESSAGE = "Interrupted!";
     public static final String FORMAT = "%s : %d : %s";
 
-    private Client client;
+    private OpcUaClient client;
 
-    public DataCollector(Client client) {
+    public DataCollector(OpcUaClient client) {
         this.client = client;
     }
 
     public void readData(String name, NodeId nodeId) {
         try {
-            DataValue dataValue = client.getOpcUaClient().readValue(0, TimestampsToReturn.Both, nodeId).get();
+            DataValue dataValue = client.readValue(0, TimestampsToReturn.Both, nodeId).get();
             Variant variant = dataValue.getValue();
             String message = String.format("%s : %s", name, String.valueOf(variant.getValue()));
             LOGGER.log(Level.INFO, message);
@@ -43,7 +44,7 @@ public class DataCollector {
     public void readMachineState() {
         NodeId nodeId = StatusNodes.MACHINE_STATE.nodeId;
         try {
-            DataValue dataValue = client.getOpcUaClient().readValue(0, TimestampsToReturn.Both, nodeId).get();
+            DataValue dataValue = client.readValue(0, TimestampsToReturn.Both, nodeId).get();
             Variant variant = dataValue.getValue();
             int stateInt = (int) variant.getValue();
             String message = String.format(FORMAT, StatusNodes.MACHINE_STATE, stateInt, MachineState.values()[stateInt]);
@@ -58,7 +59,7 @@ public class DataCollector {
     public void readStopReason() {
         NodeId nodeId = AdminNodes.STOP_REASON_VALUE.nodeId;
         try {
-            DataValue dataValue = client.getOpcUaClient().readValue(0, TimestampsToReturn.Both, nodeId).get();
+            DataValue dataValue = client.readValue(0, TimestampsToReturn.Both, nodeId).get();
             Variant variant = dataValue.getValue();
             int intValue = (int) variant.getValue();
             String message = String.format(FORMAT, nodeId, intValue, StopReasons.values()[intValue]);
@@ -72,7 +73,7 @@ public class DataCollector {
     public void readCurrentCommand() {
         NodeId nodeId = CommandNodes.SET_MACHINE_COMMAND.nodeId;
         try {
-            DataValue dataValue = client.getOpcUaClient().readValue(0, TimestampsToReturn.Both, nodeId).get();
+            DataValue dataValue = client.readValue(0, TimestampsToReturn.Both, nodeId).get();
             Variant variant = dataValue.getValue();
             int intValue = (int) variant.getValue();
             String message = String.format(FORMAT, nodeId, intValue, Commands.values()[intValue]);
@@ -86,7 +87,7 @@ public class DataCollector {
     public void readCurrentProductId() {
         NodeId nodeId = AdminNodes.BATCH_PRODUCT_ID.nodeId;
         try {
-            DataValue dataValue = client.getOpcUaClient().readValue(0, TimestampsToReturn.Both, nodeId).get();
+            DataValue dataValue = client.readValue(0, TimestampsToReturn.Both, nodeId).get();
             Variant variant = dataValue.getValue();
             int intValue = Math.round((Float) variant.getValue());
             String message = String.format(FORMAT, nodeId, intValue, Products.values()[intValue]);
@@ -99,7 +100,7 @@ public class DataCollector {
 
     public void readNodeValue(NodeId nodeId) {
         try {
-            DataValue dataValue = client.getOpcUaClient().readValue(0, TimestampsToReturn.Both, nodeId).get();
+            DataValue dataValue = client.readValue(0, TimestampsToReturn.Both, nodeId).get();
             Variant variant = dataValue.getValue();
             var value = variant.getValue();
             String message = nodeId.getIdentifier() + " : " + value;
