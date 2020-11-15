@@ -1,6 +1,7 @@
 package dk.bierproductie.opc_ua_client.handlers;
 
-import dk.bierproductie.opc_ua_client.clients.SimulatorClient;
+import dk.bierproductie.opc_ua_client.core.Batch;
+import dk.bierproductie.opc_ua_client.core.DataWriter;
 import dk.bierproductie.opc_ua_client.enums.Commands;
 import dk.bierproductie.opc_ua_client.enums.node_enums.CommandNodes;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
