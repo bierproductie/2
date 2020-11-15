@@ -1,5 +1,6 @@
 package dk.bierproductie.opc_ua_client.core;
 
+import dk.bierproductie.opc_ua_client.enums.MachineState;
 import dk.bierproductie.opc_ua_client.enums.node_enums.StatusNodes;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
@@ -28,12 +29,12 @@ public class Subscription implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private OpcUaClient client;
     private NodeId nodeId;
-    private SubscriptionType subscriptionType;
+    private Batch batch;
 
-    public Subscription(OpcUaClient client, NodeId nodeId, SubscriptionType subscriptionType) {
+    public Subscription(OpcUaClient client, NodeId nodeId, Batch batch) {
         this.client = client;
         this.nodeId = nodeId;
-        this.subscriptionType = subscriptionType;
+        this.batch = batch;
     }
 
     public void subscribe() throws InterruptedException, ExecutionException {
@@ -91,13 +92,12 @@ public class Subscription implements Runnable {
     }
 
     static void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
-        switch (item.getReadValueId().getNodeId()){
-            case (StatusNodes.MACHINE_STATE){
-                
-            }
+        if (item.getReadValueId().getNodeId() == StatusNodes.MACHINE_STATE.nodeId) {
+            String state = MachineState.values()[(int)value.getValue().getValue()].output;
+            String msg = String.format("MachineState Subscription value received: item=%s, value=%s , prettyValue=%s",
+                    item.getReadValueId().getNodeId(), value.getValue(), state);
+            LOGGER.log(Level.INFO, msg);
         }
-        String msg = String.format("Temperature subscription value received: item=%s, value=%s",
-                item.getReadValueId().getNodeId(), value.getValue());
-        LOGGER.log(Level.INFO, msg);
     }
+
 }
