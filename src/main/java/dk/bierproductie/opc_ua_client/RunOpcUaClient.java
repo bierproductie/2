@@ -1,10 +1,13 @@
 package dk.bierproductie.opc_ua_client;
 
-import dk.bierproductie.opc_ua_client.core.Batch;
-import dk.bierproductie.opc_ua_client.core.BatchHandler;
 import dk.bierproductie.opc_ua_client.clients.SimulatorClient;
+import dk.bierproductie.opc_ua_client.core.Batch;
+import dk.bierproductie.opc_ua_client.core.DataWriter;
 import dk.bierproductie.opc_ua_client.core.OpcUaClient2;
 import dk.bierproductie.opc_ua_client.enums.Products;
+import dk.bierproductie.opc_ua_client.enums.node_enums.CommandNodes;
+import dk.bierproductie.opc_ua_client.handlers.BatchHandler;
+import dk.bierproductie.opc_ua_client.handlers.SubscriptionHandler;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 
 import java.util.concurrent.ExecutionException;
@@ -24,10 +27,10 @@ public class RunOpcUaClient {
         BatchHandler batchHandler = new BatchHandler(opcUaClient);
         Batch batch = new Batch(1, Products.STOUT, 100, 100);
         batchHandler.startBatch(batch);
-        subscriptionTest(client);
+        subscriptionTest(opcUaClient);
     }
 
-    private static void subscriptionTest(Client client) throws ExecutionException, InterruptedException {
+    private static void subscriptionTest(OpcUaClient client) throws ExecutionException, InterruptedException {
         SubscriptionHandler subscriptionHandler = new SubscriptionHandler(client);
         subscriptionHandler.subscribe(CommandNodes.SET_MACHINE_COMMAND.nodeId);
         DataWriter dataWriter = new DataWriter(client);
