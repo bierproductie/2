@@ -22,7 +22,7 @@ public class RunOpcUaClient {
         LOGGER.log(Level.WARNING, "Application stopped...");
         OpcUaClient opcUaClient = SimulatorClient.getInstance().getOpcUaClient();
         BatchHandler batchHandler = new BatchHandler(opcUaClient);
-        Batch batch = new Batch(1, Products.PILSNER, 300, 100);
+        Batch batch = new Batch(1, Products.PILSNER, 600, 100);
         batchHandler.startBatch(batch);
         SubscriptionHandler subscriptionHandler = new SubscriptionHandler(opcUaClient);
         subscriptionHandler.subscribe(StatusNodes.MACHINE_STATE.nodeId, batch, 50000);
