@@ -30,11 +30,13 @@ public class Subscription implements Runnable {
     private OpcUaClient client;
     private NodeId nodeId;
     private Batch batch;
+    private long sleepTime;
 
-    public Subscription(OpcUaClient client, NodeId nodeId, Batch batch) {
+    public Subscription(OpcUaClient client, NodeId nodeId, Batch batch, long sleepTime) {
         this.client = client;
         this.nodeId = nodeId;
         this.batch = batch;
+        this.sleepTime = sleepTime;
     }
 
     public void subscribe() throws InterruptedException, ExecutionException {
@@ -77,7 +79,7 @@ public class Subscription implements Runnable {
         }
 
         // let the example run for 50 seconds then terminate
-        Thread.sleep(50000);
+        Thread.sleep(sleepTime);
     }
 
     @Override
@@ -94,8 +96,12 @@ public class Subscription implements Runnable {
     static void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
         if (item.getReadValueId().getNodeId() == StatusNodes.MACHINE_STATE.nodeId) {
             String state = MachineState.values()[(int)value.getValue().getValue()].output;
-            String msg = String.format("MachineState Subscription value received: item=%s, value=%s , prettyValue=%s",
+            String msg = String.format("MachineState Subscription value received: item=%s, value=%s, prettyValue=%s",
                     item.getReadValueId().getNodeId(), value.getValue(), state);
+            LOGGER.log(Level.INFO, msg);
+        } else {
+            String msg = String.format("Subscription value received: item=%s, value=%s",
+                    item.getReadValueId().getNodeId(), value.getValue());
             LOGGER.log(Level.INFO, msg);
         }
     }
