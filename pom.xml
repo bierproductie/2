@@ -23,7 +23,8 @@
         **/core/DataCollector.java,
         **/core/DataWriter.java,
         **/core/OpcUaClient.java,
-        **/core/Client.java,
+        **/core/MachineClient.java,
+        **/core/SimulatorClient.java,
         **/core/BatchHandler.java,
         **/core/CommandHandler.java
     </sonar.exclusions>
