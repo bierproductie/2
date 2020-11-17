@@ -103,7 +103,7 @@ public class Subscription implements Runnable {
             String msg = String.format("Temperature Subscription value received: item=%s, value=%s",
                     item.getReadValueId().getNodeId(), value.getValue());
             LOGGER.log(Level.INFO, msg);
-            BatchHandler.currentBatch.addToTempOverTime(value.getSourceTime(),(Float)value.getValue().getValue());
+            BatchHandler.getCurrentBatch().addToTempOverTime(value.getSourceTime(),(Float)value.getValue().getValue());
         } else {
             String msg = String.format("Subscription value received: item=%s, value=%s",
                     item.getReadValueId().getNodeId(), value.getValue());
