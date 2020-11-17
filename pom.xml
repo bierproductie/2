@@ -26,9 +26,9 @@
         **/core/OpcUaClient2.java,
         **/clients/MachineClient.java,
         **/clients/SimulatorClient.java,
-        **/core/handlers/BatchHandler.java,
-        **/core/handlers/CommandHandler.java,
-        **/core/handlers/SubscriptionHandler.java
+        **/handlers/BatchHandler.java,
+        **/handlers/CommandHandler.java,
+        **/handlers/SubscriptionHandler.java
     </sonar.exclusions>
 </properties>
 
