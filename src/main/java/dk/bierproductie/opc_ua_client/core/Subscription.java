@@ -29,7 +29,7 @@ public class Subscription implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private OpcUaClient client;
     private NodeId nodeId;
-    private static Batch batch;
+    private Batch batch;
     private long sleepTime;
 
     public Subscription(OpcUaClient client, NodeId nodeId, Batch batch, long sleepTime) {
@@ -93,7 +93,7 @@ public class Subscription implements Runnable {
         }
     }
 
-    public static void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
+    public void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
         if (item.getReadValueId().getNodeId() == StatusNodes.MACHINE_STATE.nodeId) {
             String state = MachineState.values()[(int) value.getValue().getValue()].output;
             String msg = String.format("MachineState Subscription value received: item=%s, value=%s, prettyValue=%s",
