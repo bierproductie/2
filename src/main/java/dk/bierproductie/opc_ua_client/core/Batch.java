@@ -18,9 +18,9 @@ public class Batch {
     private float amountToProduce;
     private boolean running;
     //private int defectiveProducts;
-    //private int acceptedProducts;
+    private int acceptedProducts;
     //private double productionTime;
-    //private oee OEE
+    private double OEE;
     //private errorFunction ErrorFunction
     //private int totalProductAmount
     private Map<DateTime,Float> tempOverTime;
@@ -77,5 +77,13 @@ public class Batch {
         public IncorrectMachineSpeedException(String errorMessage) {
             super(errorMessage);
         }
+    }
+
+    public void setOee(double idealCycleTime, double plannedProductionTime){
+        this.OEE = (this.acceptedProducts * idealCycleTime) / plannedProductionTime;
+    }
+
+    public double getOEE() {
+        return OEE;
     }
 }
