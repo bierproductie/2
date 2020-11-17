@@ -13,7 +13,7 @@ public class SubscriptionHandler {
     }
 
     public void subscribe(NodeId nodeId, Batch batch, long sleepTime) {
-        Thread subscriptionThread = new Thread(new Subscription(client, nodeId, batch, sleepTime));
+        Thread subscriptionThread = new Thread(new Subscription(client,nodeId,batch,sleepTime));
         subscriptionThread.start();
     }
 }
