@@ -2,6 +2,7 @@ package dk.bierproductie.opc_ua_client.core;
 
 import dk.bierproductie.opc_ua_client.enums.MachineState;
 import dk.bierproductie.opc_ua_client.enums.node_enums.StatusNodes;
+import dk.bierproductie.opc_ua_client.handlers.BatchHandler;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
@@ -29,13 +30,11 @@ public class Subscription implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private OpcUaClient client;
     private NodeId nodeId;
-    private Batch batch;
     private long sleepTime;
 
-    public Subscription(OpcUaClient client, NodeId nodeId, Batch batch, long sleepTime) {
+    public Subscription(OpcUaClient client, NodeId nodeId, long sleepTime) {
         this.client = client;
         this.nodeId = nodeId;
-        this.batch = batch;
         this.sleepTime = sleepTime;
     }
 
@@ -93,7 +92,7 @@ public class Subscription implements Runnable {
         }
     }
 
-    public void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
+    public static void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
         if (item.getReadValueId().getNodeId() == StatusNodes.MACHINE_STATE.nodeId) {
             String state = MachineState.values()[(int) value.getValue().getValue()].output;
             String msg = String.format("MachineState Subscription value received: item=%s, value=%s, prettyValue=%s",
@@ -104,7 +103,7 @@ public class Subscription implements Runnable {
             String msg = String.format("Temperature Subscription value received: item=%s, value=%s",
                     item.getReadValueId().getNodeId(), value.getValue());
             LOGGER.log(Level.INFO, msg);
-            batch.addToTempOverTime(value.getSourceTime(),(Float)value.getValue().getValue());
+            BatchHandler.currentBatch.addToTempOverTime(value.getSourceTime(),(Float)value.getValue().getValue());
         } else {
             String msg = String.format("Subscription value received: item=%s, value=%s",
                     item.getReadValueId().getNodeId(), value.getValue());
