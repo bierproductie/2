@@ -25,6 +25,6 @@ public class RunOpcUaClient {
         Batch batch = new Batch(1, Products.PILSNER, 600, 100);
         batchHandler.startBatch(batch);
         SubscriptionHandler subscriptionHandler = new SubscriptionHandler(opcUaClient);
-        subscriptionHandler.subscribe(StatusNodes.MACHINE_STATE.nodeId, batch, 50000);
+        subscriptionHandler.subscribe(StatusNodes.MACHINE_STATE.nodeId, 50000);
     }
 }
