@@ -44,4 +44,10 @@ class BatchTest {
     void getAmountToProduce() {
         assertEquals(1000, batch.getAmountToProduce());
     }
+
+    @Test
+    void runningTests(){
+        batch.setRunning(true);
+        assertEquals(true,batch.isRunning());
+    }
 }
