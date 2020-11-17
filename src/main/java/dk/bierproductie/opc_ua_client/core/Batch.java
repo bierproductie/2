@@ -1,7 +1,10 @@
 package dk.bierproductie.opc_ua_client.core;
 
 import dk.bierproductie.opc_ua_client.enums.Products;
+import org.eclipse.milo.opcua.stack.core.types.builtin.DateTime;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,7 +22,7 @@ public class Batch {
     //private oee OEE
     //private errorFunction ErrorFunction
     //private int totalProductAmount
-    //private map<double,float> tempOverTime
+    private Map<DateTime,Float> tempOverTime;
 
     public Batch(int id, Products productType, float machineSpeed, float amountToProduce) {
         this.id = id;
@@ -34,6 +37,7 @@ public class Batch {
             LOGGER.log(Level.WARNING, String.valueOf(e));
         }
         this.amountToProduce = amountToProduce;
+        tempOverTime = new HashMap<>();
     }
 
     public float getId() {
@@ -50,6 +54,14 @@ public class Batch {
 
     public float getAmountToProduce() {
         return amountToProduce;
+    }
+
+    public void addToTempOverTime(DateTime dateTime, Float value) {
+        tempOverTime.put(dateTime,value);
+    }
+
+    public Map<DateTime, Float> getTempOverTime() {
+        return tempOverTime;
     }
 
     class IncorrectMachineSpeedException extends Exception {
