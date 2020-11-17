@@ -36,6 +36,7 @@ public class Batch {
             LOGGER.log(Level.WARNING, String.valueOf(e));
         }
         this.amountToProduce = amountToProduce;
+        tempOverTime = new HashMap<>();
     }
 
     public float getId() {
@@ -56,6 +57,10 @@ public class Batch {
 
     public void addToTempOverTime(DateTime dateTime, Float value) {
         tempOverTime.put(dateTime,value);
+    }
+
+    public HashMap<DateTime, Float> getTempOverTime() {
+        return tempOverTime;
     }
 
     class IncorrectMachineSpeedException extends Exception {

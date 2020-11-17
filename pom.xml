@@ -22,11 +22,13 @@
     <sonar.exclusions>
         **/core/DataCollector.java,
         **/core/DataWriter.java,
+        **/core/Subscription.java,
         **/core/OpcUaClient2.java,
         **/clients/MachineClient.java,
         **/clients/SimulatorClient.java,
-        **/core/BatchHandler.java,
-        **/core/CommandHandler.java
+        **/core/handlers/BatchHandler.java,
+        **/core/handlers/CommandHandler.java,
+        **/core/handlers/SubscriptionHandler.java
     </sonar.exclusions>
 </properties>
 
