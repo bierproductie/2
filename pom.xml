@@ -24,6 +24,7 @@
         **/core/DataWriter.java,
         **/core/Subscription.java,
         **/core/OpcUaClient2.java,
+        **/core/OpcUaClient.java,
         **/clients/MachineClient.java,
         **/clients/SimulatorClient.java,
         **/handlers/BatchHandler.java,
