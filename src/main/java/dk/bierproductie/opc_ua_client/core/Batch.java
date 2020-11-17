@@ -4,6 +4,7 @@ import dk.bierproductie.opc_ua_client.enums.Products;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DateTime;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,7 +22,7 @@ public class Batch {
     //private oee OEE
     //private errorFunction ErrorFunction
     //private int totalProductAmount
-    private HashMap<DateTime,Float> tempOverTime;
+    private Map<DateTime,Float> tempOverTime;
 
     public Batch(int id, Products productType, float machineSpeed, float amountToProduce) {
         this.id = id;
@@ -59,7 +60,7 @@ public class Batch {
         tempOverTime.put(dateTime,value);
     }
 
-    public HashMap<DateTime, Float> getTempOverTime() {
+    public Map<DateTime, Float> getTempOverTime() {
         return tempOverTime;
     }
 
