@@ -16,6 +16,7 @@ public class Batch {
     private float productType;
     private float machineSpeed;
     private float amountToProduce;
+    private boolean running;
     //private int defectiveProducts;
     //private int acceptedProducts;
     //private double productionTime;
@@ -62,6 +63,14 @@ public class Batch {
 
     public Map<DateTime, Float> getTempOverTime() {
         return tempOverTime;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 
     class IncorrectMachineSpeedException extends Exception {

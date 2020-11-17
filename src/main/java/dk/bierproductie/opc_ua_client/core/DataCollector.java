@@ -41,18 +41,22 @@ public class DataCollector {
         }
     }
 
-    public void readMachineState() {
+    public int readMachineState(boolean withString) {
         NodeId nodeId = StatusNodes.MACHINE_STATE.nodeId;
         try {
             DataValue dataValue = client.readValue(0, TimestampsToReturn.Both, nodeId).get();
             Variant variant = dataValue.getValue();
             int stateInt = (int) variant.getValue();
-            String message = String.format(FORMAT, StatusNodes.MACHINE_STATE, stateInt, MachineState.values()[stateInt]);
-            LOGGER.log(Level.INFO, message);
+            if (withString){
+                String message = String.format(FORMAT, StatusNodes.MACHINE_STATE, stateInt, MachineState.getStateFromValue(stateInt).output);
+                LOGGER.log(Level.INFO, message);
+            }
+            return stateInt;
         } catch (InterruptedException | ExecutionException e) {
             LOGGER.log(Level.WARNING, INTERRUPTED_MESSAGE, e);
             Thread.currentThread().interrupt();
         }
+        return 0;
     }
 
 

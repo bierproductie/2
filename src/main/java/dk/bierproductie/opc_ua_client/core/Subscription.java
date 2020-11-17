@@ -31,11 +31,13 @@ public class Subscription implements Runnable {
     private OpcUaClient client;
     private NodeId nodeId;
     private long sleepTime;
+    private DataCollector dataCollector;
 
     public Subscription(OpcUaClient client, NodeId nodeId, long sleepTime) {
         this.client = client;
         this.nodeId = nodeId;
         this.sleepTime = sleepTime;
+        dataCollector = new DataCollector(client);
     }
 
     public void subscribe() throws InterruptedException, ExecutionException {
@@ -78,7 +80,10 @@ public class Subscription implements Runnable {
         }
 
         // let the example run for 50 seconds then terminate
-        Thread.sleep(sleepTime);
+        while (dataCollector.readMachineState(false) != 17){
+            Thread.sleep(sleepTime);
+        }
+        // Thread.sleep(sleepTime);
     }
 
     @Override
@@ -94,16 +99,19 @@ public class Subscription implements Runnable {
 
     public static void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
         if (item.getReadValueId().getNodeId() == StatusNodes.MACHINE_STATE.nodeId) {
-            String state = MachineState.values()[(int) value.getValue().getValue()].output;
+            int stateInt = (int)value.getValue().getValue();
+            String state = MachineState.getStateFromValue(stateInt).output;
             String msg = String.format("MachineState Subscription value received: item=%s, value=%s, prettyValue=%s",
                     item.getReadValueId().getNodeId(), value.getValue(), state);
+            if (stateInt == 16 || stateInt ==17){
+                BatchHandler.getCurrentBatch().setRunning(false);
+            }
             LOGGER.log(Level.INFO, msg);
-            System.out.println(value.getServerTime());
         } else if (item.getReadValueId().getNodeId() == StatusNodes.TEMPERATURE.nodeId) {
             String msg = String.format("Temperature Subscription value received: item=%s, value=%s",
                     item.getReadValueId().getNodeId(), value.getValue());
             LOGGER.log(Level.INFO, msg);
-            BatchHandler.getCurrentBatch().addToTempOverTime(value.getSourceTime(),(Float)value.getValue().getValue());
+            BatchHandler.getCurrentBatch().addToTempOverTime(value.getSourceTime(), (Float) value.getValue().getValue());
         } else {
             String msg = String.format("Subscription value received: item=%s, value=%s",
                     item.getReadValueId().getNodeId(), value.getValue());
