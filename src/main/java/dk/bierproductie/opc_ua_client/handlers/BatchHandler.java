@@ -14,6 +14,7 @@ public class BatchHandler {
     private CommandHandler commandHandler;
     private DataWriter dataWriter;
     private SubscriptionHandler subscriptionHandler;
+    public static Batch currentBatch;
 
     public BatchHandler(OpcUaClient client) {
         this.commandHandler = new CommandHandler(client);
@@ -22,15 +23,16 @@ public class BatchHandler {
     }
 
     public void startBatch(Batch batch) throws ExecutionException, InterruptedException {
-        setupSubscriptions(batch);
-        dataWriter.writeData(CommandNodes.SET_NEXT_BATCH_ID.nodeId, batch.getId());
-        dataWriter.writeData(CommandNodes.SET_PRODUCT_ID_FOR_NEXT_BATCH.nodeId, batch.getProductType());
-        dataWriter.writeData(CommandNodes.SET_PRODUCT_AMOUNT_IN_NEXT_BATCH.nodeId, batch.getAmountToProduce());
-        dataWriter.writeData(CommandNodes.SET_MACHINE_SPEED.nodeId, batch.getMachineSpeed());
+        currentBatch = batch;
+        setupSubscriptions(currentBatch);
+        dataWriter.writeData(CommandNodes.SET_NEXT_BATCH_ID.nodeId, currentBatch.getId());
+        dataWriter.writeData(CommandNodes.SET_PRODUCT_ID_FOR_NEXT_BATCH.nodeId, currentBatch.getProductType());
+        dataWriter.writeData(CommandNodes.SET_PRODUCT_AMOUNT_IN_NEXT_BATCH.nodeId, currentBatch.getAmountToProduce());
+        dataWriter.writeData(CommandNodes.SET_MACHINE_SPEED.nodeId, currentBatch.getMachineSpeed());
         commandHandler.setCommand(Commands.START);
     }
 
     public void setupSubscriptions(Batch batch) {
-        subscriptionHandler.subscribe(StatusNodes.TEMPERATURE.nodeId, batch, 50000);
+        subscriptionHandler.subscribe(StatusNodes.TEMPERATURE.nodeId, 50000);
     }
 }
