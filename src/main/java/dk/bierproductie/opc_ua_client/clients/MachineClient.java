@@ -41,4 +41,8 @@ public final class MachineClient {
         }
         return instance;
     }
+
+    public OpcUaClient getOpcUaClient() {
+        return opcUaClient;
+    }
 }
