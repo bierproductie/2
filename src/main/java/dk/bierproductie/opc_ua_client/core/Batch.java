@@ -21,6 +21,8 @@ public class Batch {
     private int acceptedProducts;
     //private double productionTime;
     private double OEE;
+    private double idealCycleTime = this.amountToProduce/this.machineSpeed;
+    private double plannedProductionTime = this.idealCycleTime * this.amountToProduce;
 
     //private errorFunction ErrorFunction
     //private int totalProductAmount
@@ -80,9 +82,8 @@ public class Batch {
         }
     }
 
-    //  TODO figure out what the plannedProducionTime should be.
-    public void setOEE(double plannedProductionTime){
-        this.OEE = (this.acceptedProducts * (this.amountToProduce / this.machineSpeed)) / plannedProductionTime;
+    public void setOEE(){
+        this.OEE = ((this.acceptedProducts * this.idealCycleTime) / this.plannedProductionTime) * 100;
     }
 
     public double getOEE() {
