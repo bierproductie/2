@@ -28,9 +28,13 @@ public enum MachineState {
         this.value = value;
     }
 
+    public int getValue() {
+        return value;
+    }
+
     public static MachineState getStateFromValue(int value) {
         for (int i = 0; i < MachineState.values().length; i++) {
-            if (MachineState.values()[i].value==value){
+            if (MachineState.values()[i].getValue()==value){
                 return MachineState.values()[i];
             }
         }
