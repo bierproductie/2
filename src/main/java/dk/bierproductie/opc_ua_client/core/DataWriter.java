@@ -14,6 +14,7 @@ public class DataWriter {
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     private OpcUaClient client;
+    private static DataWriter instance;
 
     public DataWriter(OpcUaClient client) {
         this.client = client;
@@ -24,5 +25,13 @@ public class DataWriter {
         String message = String.format("Wrote on:%s with value: %s of: %s", nodeId, value, value.getClass());
         LOGGER.log(Level.INFO, message);
         client.writeValue(nodeId, DataValue.valueOnly(variant)).get();
+    }
+
+    public static DataWriter getInstance() {
+        return instance;
+    }
+
+    public static void setInstance(OpcUaClient client) {
+        DataWriter.instance = new DataWriter(client);
     }
 }

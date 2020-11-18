@@ -11,11 +11,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CommandHandler {
+public final class CommandHandler {
 
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     private OpcUaClient client;
+    private static CommandHandler instance;
 
     public CommandHandler(OpcUaClient client) {
         this.client = client;
@@ -34,5 +35,13 @@ public class CommandHandler {
         executeCommand();
         String message = String.format("Executed command: %s %d", command,command.ordinal());
         LOGGER.log(Level.INFO,message);
+    }
+
+    public static CommandHandler getInstance() {
+        return instance;
+    }
+
+    public static void setInstance(OpcUaClient client) {
+        CommandHandler.instance = new CommandHandler(client);
     }
 }

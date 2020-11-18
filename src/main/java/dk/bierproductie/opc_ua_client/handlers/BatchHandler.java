@@ -13,21 +13,22 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class BatchHandler {
+public final class BatchHandler {
 
+    private static BatchHandler instance;
+    private static Batch currentBatch;
     private CommandHandler commandHandler;
     private DataWriter dataWriter;
     private SubscriptionHandler subscriptionHandler;
     private DataCollector dataCollector;
-    private static Batch currentBatch;
 
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     public BatchHandler(OpcUaClient client) {
-        this.commandHandler = new CommandHandler(client);
-        this.dataWriter = new DataWriter(client);
-        this.subscriptionHandler = new SubscriptionHandler(client);
-        this.dataCollector = new DataCollector(client);
+        this.commandHandler = CommandHandler.getInstance();
+        this.dataWriter = DataWriter.getInstance();
+        this.subscriptionHandler = SubscriptionHandler.getInstance();
+        this.dataCollector = DataCollector.getInstance();
     }
 
     public void startBatch(Batch batch) throws ExecutionException, InterruptedException {
@@ -58,5 +59,13 @@ public class BatchHandler {
 
     public static void setCurrentBatch(Batch currentBatch) {
         BatchHandler.currentBatch = currentBatch;
+    }
+
+    public static void setInstance(OpcUaClient client) {
+        BatchHandler.instance = new BatchHandler(client);
+    }
+
+    public static BatchHandler getInstance() {
+        return instance;
     }
 }

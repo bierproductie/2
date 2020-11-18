@@ -37,7 +37,7 @@ public class Subscription implements Runnable {
         this.client = client;
         this.nodeId = nodeId;
         this.sleepTime = sleepTime;
-        dataCollector = new DataCollector(client);
+        dataCollector = DataCollector.getInstance();
     }
 
     public void subscribe() throws InterruptedException, ExecutionException {

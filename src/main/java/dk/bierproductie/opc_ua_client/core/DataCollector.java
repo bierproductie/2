@@ -22,6 +22,7 @@ public class DataCollector {
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     public static final String INTERRUPTED_MESSAGE = "Interrupted!";
     public static final String FORMAT = "%s : %d : %s";
+    private static DataCollector instance;
 
     private OpcUaClient client;
 
@@ -113,5 +114,13 @@ public class DataCollector {
             LOGGER.log(Level.WARNING, INTERRUPTED_MESSAGE, e);
             Thread.currentThread().interrupt();
         }
+    }
+
+    public static DataCollector getInstance() {
+        return instance;
+    }
+
+    public static void setInstance(OpcUaClient client) {
+        DataCollector.instance = new DataCollector(client);
     }
 }
