@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 public class DataWriter {
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-    private OpcUaClient client;
+    private final OpcUaClient client;
     private static DataWriter instance;
 
     public DataWriter(OpcUaClient client) {

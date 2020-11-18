@@ -7,8 +7,6 @@ import dk.bierproductie.opc_ua_client.enums.Commands;
 import dk.bierproductie.opc_ua_client.enums.node_enums.CommandNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.StatusNodes;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
-
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,14 +15,14 @@ public final class BatchHandler {
 
     private static BatchHandler instance;
     private static Batch currentBatch;
-    private CommandHandler commandHandler;
-    private DataWriter dataWriter;
-    private SubscriptionHandler subscriptionHandler;
-    private DataCollector dataCollector;
+    private final CommandHandler commandHandler;
+    private final DataWriter dataWriter;
+    private final SubscriptionHandler subscriptionHandler;
+    private final DataCollector dataCollector;
 
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-    public BatchHandler(OpcUaClient client) {
+    public BatchHandler() {
         this.commandHandler = CommandHandler.getInstance();
         this.dataWriter = DataWriter.getInstance();
         this.subscriptionHandler = SubscriptionHandler.getInstance();
@@ -61,8 +59,8 @@ public final class BatchHandler {
         BatchHandler.currentBatch = currentBatch;
     }
 
-    public static void setInstance(OpcUaClient client) {
-        BatchHandler.instance = new BatchHandler(client);
+    public static void setInstance() {
+        BatchHandler.instance = new BatchHandler();
     }
 
     public static BatchHandler getInstance() {

@@ -15,7 +15,7 @@ public final class CommandHandler {
 
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-    private OpcUaClient client;
+    private final OpcUaClient client;
     private static CommandHandler instance;
 
     public CommandHandler(OpcUaClient client) {

@@ -24,7 +24,7 @@ public class DataCollector {
     public static final String FORMAT = "%s : %d : %s";
     private static DataCollector instance;
 
-    private OpcUaClient client;
+    private final OpcUaClient client;
 
     public DataCollector(OpcUaClient client) {
         this.client = client;
@@ -34,7 +34,7 @@ public class DataCollector {
         try {
             DataValue dataValue = client.readValue(0, TimestampsToReturn.Both, nodeId).get();
             Variant variant = dataValue.getValue();
-            String message = String.format("%s : %s", name, String.valueOf(variant.getValue()));
+            String message = String.format("%s : %s", name, variant.getValue());
             LOGGER.log(Level.INFO, message);
         } catch (InterruptedException | ExecutionException e) {
             LOGGER.log(Level.WARNING, INTERRUPTED_MESSAGE, e);
