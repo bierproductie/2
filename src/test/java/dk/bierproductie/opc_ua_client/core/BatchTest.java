@@ -50,4 +50,10 @@ class BatchTest {
         batch.setRunning(true);
         assertEquals(true,batch.isRunning());
     }
+
+    @Test
+    void testOEE(){
+        batch.setOEE();
+        assertEquals(0,batch.getOEE());
+    }
 }
