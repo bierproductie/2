@@ -12,10 +12,10 @@ public class Batch {
 
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-    private float id;
-    private float productType;
+    private final float id;
+    private final float productType;
     private float machineSpeed;
-    private float amountToProduce;
+    private final float amountToProduce;
     private boolean running;
     //private int defectiveProducts;
     private int acceptedProducts;
@@ -24,7 +24,7 @@ public class Batch {
 
     //private errorFunction ErrorFunction
     //private int totalProductAmount
-    private Map<DateTime,Float> tempOverTime;
+    private final Map<DateTime,Float> tempOverTime;
 
     public Batch(int id, Products productType, float machineSpeed, float amountToProduce) {
         this.id = id;

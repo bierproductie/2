@@ -28,16 +28,16 @@ import java.util.logging.Logger;
 public class Subscription implements Runnable {
     public static final AtomicLong clientHandles = new AtomicLong(1L);
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    private OpcUaClient client;
-    private NodeId nodeId;
-    private long sleepTime;
-    private DataCollector dataCollector;
+    private final OpcUaClient client;
+    private final NodeId nodeId;
+    private final long sleepTime;
+    private final DataCollector dataCollector;
 
     public Subscription(OpcUaClient client, NodeId nodeId, long sleepTime) {
         this.client = client;
         this.nodeId = nodeId;
         this.sleepTime = sleepTime;
-        dataCollector = new DataCollector(client);
+        dataCollector = DataCollector.getInstance();
     }
 
     public void subscribe() throws InterruptedException, ExecutionException {

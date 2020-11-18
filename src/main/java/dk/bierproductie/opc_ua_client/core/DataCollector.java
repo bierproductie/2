@@ -22,8 +22,9 @@ public class DataCollector {
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     public static final String INTERRUPTED_MESSAGE = "Interrupted!";
     public static final String FORMAT = "%s : %d : %s";
+    private static DataCollector instance;
 
-    private OpcUaClient client;
+    private final OpcUaClient client;
 
     public DataCollector(OpcUaClient client) {
         this.client = client;
@@ -33,7 +34,7 @@ public class DataCollector {
         try {
             DataValue dataValue = client.readValue(0, TimestampsToReturn.Both, nodeId).get();
             Variant variant = dataValue.getValue();
-            String message = String.format("%s : %s", name, String.valueOf(variant.getValue()));
+            String message = String.format("%s : %s", name, variant.getValue());
             LOGGER.log(Level.INFO, message);
         } catch (InterruptedException | ExecutionException e) {
             LOGGER.log(Level.WARNING, INTERRUPTED_MESSAGE, e);
@@ -113,5 +114,13 @@ public class DataCollector {
             LOGGER.log(Level.WARNING, INTERRUPTED_MESSAGE, e);
             Thread.currentThread().interrupt();
         }
+    }
+
+    public static DataCollector getInstance() {
+        return instance;
+    }
+
+    public static void setInstance(OpcUaClient client) {
+        DataCollector.instance = new DataCollector(client);
     }
 }
