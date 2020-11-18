@@ -26,8 +26,8 @@
         **/core/OpcUaClient2.java,
         **/RunOpcUaClient.java,
         **/enums/node_enums/Constants.java,
-        **/clients/..*,
-        **/handlers/..*
+        **/clients/**,
+        **/handlers/**
     </sonar.exclusions>
 </properties>
 

@@ -6,7 +6,6 @@ import dk.bierproductie.opc_ua_client.core.DataWriter;
 import dk.bierproductie.opc_ua_client.enums.Commands;
 import dk.bierproductie.opc_ua_client.enums.node_enums.CommandNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.StatusNodes;
-import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,7 +47,6 @@ public final class BatchHandler {
 
     public void setupSubscriptions() {
         subscriptionHandler.subscribe(StatusNodes.MACHINE_STATE.nodeId, 1000);
-        //subscriptionHandler.subscribe(StatusNodes.TEMPERATURE.nodeId, 50000);
     }
 
     public static Batch getCurrentBatch() {
