@@ -47,11 +47,10 @@ public final class BatchHandler {
             dataWriter.writeData(CommandNodes.SET_PRODUCT_AMOUNT_IN_NEXT_BATCH.nodeId, currentBatch.getAmountToProduce());
             dataWriter.writeData(CommandNodes.SET_MACHINE_SPEED.nodeId, currentBatch.getMachineSpeed());
             commandHandler.setCommand(Commands.START);
-            finishBatch();
         }
     }
 
-    private void finishBatch() {
+    public static void finishBatch() {
         currentBatch.setDefectiveProducts((int) DataCollector.getInstance().readData("accepted", AdminNodes.DEFECTIVE_PRODUCTS.nodeId, false));
         currentBatch.setOEE();
         LOGGER.log(Level.INFO, currentBatch.toString());
