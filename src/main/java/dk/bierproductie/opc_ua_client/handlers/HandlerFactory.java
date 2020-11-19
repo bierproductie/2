@@ -21,9 +21,11 @@ public class HandlerFactory {
         SubscriptionHandler.setInstance(client);
         DataCollector.setInstance(client);
         DataWriter.setInstance(client);
-        MachineHandler machineHandler = new MachineHandler(client);
-        machineHandler.setUpSimulator();
-        Thread.sleep(1000);
+        if (isSimulator) {
+            MachineHandler machineHandler = new MachineHandler(client);
+            machineHandler.setUpSimulator();
+            Thread.sleep(1000);
+        }
         BatchHandler.setInstance();
     }
 }
