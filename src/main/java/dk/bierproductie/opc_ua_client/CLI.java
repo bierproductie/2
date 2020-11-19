@@ -17,6 +17,7 @@ public class CLI {
     public static void handleCommand(String command) throws ExecutionException, InterruptedException {
         Scanner scanner = new Scanner(System.in);
         String[] cmd = command.toLowerCase().split(" ");
+        String msg = "";
         switch (cmd[0]) {
             case "batch":
                 LOGGER.log(Level.INFO,"Run on simulator? [Y/n]");
@@ -35,7 +36,7 @@ public class CLI {
                     LOGGER.log(Level.INFO,"No such recipe");
                     break;
                 }
-                String msg = String.format("%s chosen", Products.values()[recipe]);
+                msg = String.format("%s chosen", Products.values()[recipe]);
                 LOGGER.log(Level.INFO, msg);
                 msg = String.format("Now select a speed within this range: 0-%d", Products.values()[recipe].speedLimit);
                 LOGGER.log(Level.INFO, msg);
@@ -67,10 +68,21 @@ public class CLI {
                     LOGGER.log(Level.INFO,str);
                 }
                 break;
+            case "dino":
+                msg =   "                 \n"+
+                        "               __\n" +
+                        "              / _)\n" +
+                        "     _.----._/ /\n" +
+                        "    /         /\n" +
+                        " __/ (  | (  |\n" +
+                        "/__.-'|_|--|_|";
+                LOGGER.log(Level.INFO,msg);
+                break;
             default:
                 LOGGER.log(Level.INFO,"Command not recognized");
                 handleCommand("help");
         }
+        getCommand();
     }
 
     public static void startBatch(int batchId, int recipe, float speed, float amount, boolean isSimulator) throws ExecutionException, InterruptedException {
@@ -79,10 +91,13 @@ public class CLI {
         BatchHandler.getInstance().startBatch(batch);
     }
 
-
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
+    public static void getCommand() throws ExecutionException, InterruptedException {
         Scanner scanner = new Scanner(System.in);
         String cmd = scanner.nextLine();
         handleCommand(cmd);
+    }
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        getCommand();
     }
 }
