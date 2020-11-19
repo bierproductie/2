@@ -99,16 +99,6 @@ public class Batch {
 
     @Override
     public String toString() {
-        return "Batch{" +
-                "id=" + id +
-                ", productType=" + productType +
-                ", machineSpeed=" + machineSpeed +
-                ", amountToProduce=" + amountToProduce +
-                ", running=" + running +
-                ", defectiveProducts=" + defectiveProducts +
-                ", acceptedProducts=" + acceptedProducts +
-                ", OEE=" + OEE +
-                ", tempOverTime=" + tempOverTime +
-                '}';
+        return String.format("Batch{id=%s, productType=%s, machineSpeed=%s, amountToProduce=%s, running=%s, defectiveProducts=%d, acceptedProducts=%d, OEE=%s, tempOverTime=%s}", id, productType, machineSpeed, amountToProduce, running, defectiveProducts, acceptedProducts, OEE, tempOverTime);
     }
 }
