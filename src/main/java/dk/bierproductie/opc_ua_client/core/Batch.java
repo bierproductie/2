@@ -12,18 +12,19 @@ public class Batch {
 
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-    private float id;
-    private float productType;
+    private final float id;
+    private final float productType;
     private float machineSpeed;
-    private float amountToProduce;
+    private final float amountToProduce;
     private boolean running;
     //private int defectiveProducts;
-    //private int acceptedProducts;
+    private int acceptedProducts;
     //private double productionTime;
-    //private oee OEE
+    private double OEE;
+
     //private errorFunction ErrorFunction
     //private int totalProductAmount
-    private Map<DateTime,Float> tempOverTime;
+    private final Map<DateTime,Float> tempOverTime;
 
     public Batch(int id, Products productType, float machineSpeed, float amountToProduce) {
         this.id = id;
@@ -77,5 +78,13 @@ public class Batch {
         public IncorrectMachineSpeedException(String errorMessage) {
             super(errorMessage);
         }
+    }
+
+    public void setOEE(){
+        this.OEE = ((this.acceptedProducts * (this.amountToProduce/this.machineSpeed)) / ((this.amountToProduce/this.machineSpeed) * this.amountToProduce)) * 100;
+    }
+
+    public double getOEE() {
+        return OEE;
     }
 }

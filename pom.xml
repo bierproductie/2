@@ -25,11 +25,10 @@
         **/core/Subscription.java,
         **/core/OpcUaClient2.java,
         **/RunOpcUaClient.java,
-        **/clients/MachineClient.java,
-        **/clients/SimulatorClient.java,
-        **/handlers/BatchHandler.java,
-        **/handlers/CommandHandler.java,
-        **/handlers/SubscriptionHandler.java
+        **/CLI.java,
+        **/enums/node_enums/Constants.java,
+        **/clients/**,
+        **/handlers/**
     </sonar.exclusions>
 </properties>
 
