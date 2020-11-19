@@ -5,14 +5,16 @@ import dk.bierproductie.opc_ua_client.enums.Products;
 import dk.bierproductie.opc_ua_client.handlers.BatchHandler;
 import dk.bierproductie.opc_ua_client.handlers.HandlerFactory;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CLI {
 
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    private static String[] commands = {"batch","help","dino"};
+    private static String[] commands = {"batch","help","quit","dino"};
 
     public static void handleCommand(String command) throws ExecutionException, InterruptedException {
         Scanner scanner = new Scanner(System.in);
@@ -51,11 +53,16 @@ public class CLI {
                 String run = scanner.nextLine();
                 if (run.isEmpty()) {
                     startBatch(batchId, recipe, speed, amount, isSimulator);
+                    while (BatchHandler.getCurrentBatch().isRunning()){
+                        Thread.sleep(1000);
+                    }
                     LOGGER.log(Level.INFO,"Batch finished...");
                     LOGGER.log(Level.INFO,"Run another? [Y/n]");
                     run = scanner.nextLine();
                     if (run.isEmpty()) {
                         handleCommand("Batch");
+                    } else {
+                        handleCommand("quit");
                     }
                 } else {
                     LOGGER.log(Level.INFO,"Restarting batch creation process");
@@ -78,6 +85,9 @@ public class CLI {
                         "/__.-'|_|--|_|";
                 LOGGER.log(Level.INFO,msg);
                 break;
+            case "quit":
+                System.exit(0);
+                break;
             default:
                 LOGGER.log(Level.INFO,"Command not recognized");
                 handleCommand("help");
@@ -98,6 +108,6 @@ public class CLI {
     }
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        getCommand();
+        handleCommand("help");
     }
 }
