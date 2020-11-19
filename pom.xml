@@ -26,6 +26,7 @@
         **/core/OpcUaClient2.java,
         **/RunOpcUaClient.java,
         **/CLI.java,
+        **/CLIFormatter.java,
         **/enums/node_enums/Constants.java,
         **/clients/**,
         **/handlers/**
