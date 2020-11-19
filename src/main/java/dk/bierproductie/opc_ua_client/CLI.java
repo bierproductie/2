@@ -6,61 +6,76 @@ import dk.bierproductie.opc_ua_client.handlers.BatchHandler;
 import dk.bierproductie.opc_ua_client.handlers.HandlerFactory;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CLI {
+
+    private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    private static String[] commands = {"batch","help","dino"};
 
     public static void handleCommand(String command) throws ExecutionException, InterruptedException {
         Scanner scanner = new Scanner(System.in);
         String[] cmd = command.toLowerCase().split(" ");
         switch (cmd[0]) {
             case "batch":
-                System.out.println("Run on simulator? [Y/n]");
+                LOGGER.log(Level.INFO,"Run on simulator? [Y/n]");
                 String resp = scanner.nextLine();
-                boolean isSimulator;
-                if (resp.isEmpty()) {
-                    isSimulator = true;
-                } else {
-                    isSimulator = false;
-                }
-                System.out.println("New batch setup initiated");
-                System.out.println("Give the bach an ID");
+                boolean isSimulator = resp.isEmpty();
+                LOGGER.log(Level.INFO,"New batch setup initiated");
+                LOGGER.log(Level.INFO,"Give the bach an ID");
                 int batchId = scanner.nextInt();
-                System.out.println("Please choose a recipe");
+                LOGGER.log(Level.INFO,"Please choose a recipe");
                 for (Products product : Products.values()) {
-                    System.out.println(product + " : " + product.ordinal());
+                    String message = String.format("%s : %d", product, product.ordinal());
+                    LOGGER.log(Level.INFO, message);
                 }
                 int recipe = scanner.nextInt();
                 if (recipe > Products.values().length) {
-                    System.out.println("No such recipe");
-                    return;
+                    LOGGER.log(Level.INFO,"No such recipe");
+                    break;
                 }
-                System.out.println(Products.values()[recipe] + " chosen");
-                System.out.println("Now select a speed within this range: 0-" + Products.values()[recipe].speedLimit);
+                String msg = String.format("%s chosen", Products.values()[recipe]);
+                LOGGER.log(Level.INFO, msg);
+                msg = String.format("Now select a speed within this range: 0-%d", Products.values()[recipe].speedLimit);
+                LOGGER.log(Level.INFO, msg);
                 float speed = scanner.nextFloat();
-                System.out.println(speed + " set, now choose amount of products to create");
+                msg = String.format("%s set, now choose amount of products to create", speed);
+                LOGGER.log(Level.INFO, msg);
                 int amount = scanner.nextInt();
-                System.out.println("All parameters now set batch overview shown below:");
-                System.out.println("BatchId: " + batchId + ", recipe: " + Products.values()[recipe] + ", speed: " + speed + ", amount: " + amount);
-                System.out.println("Run this batch [Y/n]");
+                LOGGER.log(Level.INFO,"All parameters now set batch overview shown below:");
+                msg = String.format("BatchId: %d, recipe: %s, speed: %s, amount: %d", batchId, Products.values()[recipe], speed, amount);
+                LOGGER.log(Level.INFO, msg);
+                LOGGER.log(Level.INFO,"Run this batch [Y/n]");
                 String run = scanner.nextLine();
                 if (run.isEmpty()) {
                     startBatch(batchId, recipe, speed, amount, isSimulator);
-                    System.out.println("Batch finished...");
-                    System.out.println("Run another? [Y/n]");
+                    LOGGER.log(Level.INFO,"Batch finished...");
+                    LOGGER.log(Level.INFO,"Run another? [Y/n]");
                     run = scanner.nextLine();
                     if (run.isEmpty()) {
                         handleCommand("Batch");
                     }
                 } else {
-                    System.out.println("Restarting batch creation process");
+                    LOGGER.log(Level.INFO,"Restarting batch creation process");
                     handleCommand("Batch");
                 }
+                break;
+            case "help":
+                LOGGER.log(Level.INFO,"Commands:");
+                for (String str : commands) {
+                    LOGGER.log(Level.INFO,str);
+                }
+                break;
+            default:
+                LOGGER.log(Level.INFO,"Command not recognized");
+                handleCommand("help");
         }
     }
 
     public static void startBatch(int batchId, int recipe, float speed, float amount, boolean isSimulator) throws ExecutionException, InterruptedException {
         Batch batch = new Batch(batchId, Products.values()[recipe], speed, amount);
-        HandlerFactory handlerFactory = new HandlerFactory(isSimulator);
+        HandlerFactory.getInstance(isSimulator);
         BatchHandler.getInstance().startBatch(batch);
     }
 

@@ -10,9 +10,11 @@ import java.util.concurrent.ExecutionException;
 
 public class HandlerFactory {
 
+    private static HandlerFactory instance;
+
     public HandlerFactory(boolean isSimulator) throws InterruptedException, ExecutionException {
         OpcUaClient client;
-        if (isSimulator){
+        if (isSimulator) {
             client = SimulatorClient.getInstance().getOpcUaClient();
         } else {
             client = MachineClient.getInstance().getOpcUaClient();
@@ -28,4 +30,12 @@ public class HandlerFactory {
         }
         BatchHandler.setInstance();
     }
+
+    public static HandlerFactory getInstance(boolean isSimulator) throws ExecutionException, InterruptedException {
+        if (instance == null) {
+            instance = new HandlerFactory(isSimulator);
+        }
+        return instance;
+    }
+
 }
