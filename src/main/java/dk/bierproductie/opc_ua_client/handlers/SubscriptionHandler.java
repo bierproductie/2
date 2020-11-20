@@ -12,10 +12,9 @@ public class SubscriptionHandler {
         this.client = client;
     }
 
-    public Thread subscribe(NodeId nodeId, long sleepTime) {
+    public void subscribe(NodeId nodeId, long sleepTime) {
         Thread subscriptionThread = new Thread(new Subscription(client, nodeId, sleepTime));
         subscriptionThread.start();
-        return subscriptionThread;
     }
 
     public static void setInstance(OpcUaClient client) {

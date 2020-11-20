@@ -17,7 +17,7 @@ public class Batch {
     private float machineSpeed;
     private final float amountToProduce;
     private boolean running;
-    //private int defectiveProducts;
+    private int defectiveProducts;
     private int acceptedProducts;
     //private double productionTime;
     private double OEE;
@@ -74,6 +74,15 @@ public class Batch {
         this.running = running;
     }
 
+    public int getDefectiveProducts() {
+        return defectiveProducts;
+    }
+
+    public void setDefectiveProducts(int defectiveProducts) {
+        this.defectiveProducts = defectiveProducts;
+        this.acceptedProducts = (int)amountToProduce - defectiveProducts;
+    }
+
     class IncorrectMachineSpeedException extends Exception {
         public IncorrectMachineSpeedException(String errorMessage) {
             super(errorMessage);
@@ -86,5 +95,10 @@ public class Batch {
 
     public double getOEE() {
         return OEE;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Batch{id=%s, productType=%s, machineSpeed=%s, amountToProduce=%s, running=%s, defectiveProducts=%d, acceptedProducts=%d, OEE=%s, tempOverTime=%s}", id, productType, machineSpeed, amountToProduce, running, defectiveProducts, acceptedProducts, OEE, tempOverTime);
     }
 }

@@ -3,6 +3,7 @@ package dk.bierproductie.opc_ua_client.core;
 import dk.bierproductie.opc_ua_client.enums.MachineState;
 import dk.bierproductie.opc_ua_client.enums.node_enums.StatusNodes;
 import dk.bierproductie.opc_ua_client.handlers.BatchHandler;
+import dk.bierproductie.opc_ua_client.handlers.HandlerFactory;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
@@ -78,12 +79,6 @@ public class Subscription implements Runnable {
                 LOGGER.log(Level.INFO, msg);
             }
         }
-
-        // let the example run for 50 seconds then terminate
-        while (dataCollector.readMachineState(false) != 17){
-            Thread.sleep(sleepTime);
-        }
-        // Thread.sleep(sleepTime);
     }
 
     @Override
@@ -103,7 +98,9 @@ public class Subscription implements Runnable {
             String state = MachineState.getStateFromValue(stateInt).output;
             String msg = String.format("MachineState Subscription value received: item=%s, value=%s, prettyValue=%s",
                     item.getReadValueId().getNodeId(), value.getValue(), state);
-            if (stateInt == 16 || stateInt ==17){
+            if (stateInt ==17){
+                HandlerFactory.client.getSubscriptionManager().clearSubscriptions();
+                BatchHandler.finishBatch();
                 BatchHandler.getCurrentBatch().setRunning(false);
             }
             LOGGER.log(Level.INFO, msg);

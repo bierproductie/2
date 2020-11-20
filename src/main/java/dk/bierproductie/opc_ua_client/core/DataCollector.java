@@ -30,16 +30,20 @@ public class DataCollector {
         this.client = client;
     }
 
-    public void readData(String name, NodeId nodeId) {
+    public Object readData(String name, NodeId nodeId, boolean withString) {
         try {
             DataValue dataValue = client.readValue(0, TimestampsToReturn.Both, nodeId).get();
             Variant variant = dataValue.getValue();
-            String message = String.format("%s : %s", name, variant.getValue());
-            LOGGER.log(Level.INFO, message);
+            if (withString) {
+                String message = String.format("%s : %s", name, variant.getValue());
+                LOGGER.log(Level.INFO, message);
+            }
+            return variant.getValue();
         } catch (InterruptedException | ExecutionException e) {
             LOGGER.log(Level.WARNING, INTERRUPTED_MESSAGE, e);
             Thread.currentThread().interrupt();
         }
+        return null;
     }
 
     public int readMachineState(boolean withString) {

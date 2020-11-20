@@ -17,7 +17,7 @@ public class RunOpcUaClient {
         LOGGER.log(Level.WARNING, "Application is fresh and ready to do some work! Lets get to it");
         new OpcUaClient2().start();
         LOGGER.log(Level.WARNING, "Application stopped...");
-        HandlerFactory handlerFactory = new HandlerFactory(true);
+        HandlerFactory.getInstance(true);
         BatchHandler batchHandler = BatchHandler.getInstance();
         Batch batch = new Batch(3, Products.PILSNER, 600, 100);
         batchHandler.startBatch(batch);

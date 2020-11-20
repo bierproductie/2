@@ -11,9 +11,9 @@ import java.util.concurrent.ExecutionException;
 public class HandlerFactory {
 
     private static HandlerFactory instance;
+    public static OpcUaClient client;
 
     public HandlerFactory(boolean isSimulator) throws InterruptedException, ExecutionException {
-        OpcUaClient client;
         if (isSimulator) {
             client = SimulatorClient.getInstance().getOpcUaClient();
         } else {
