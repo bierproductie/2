@@ -20,9 +20,25 @@ class BatchTest {
     @Test
     void addToTempOverTime() {
         DateTime dateTime = new DateTime();
-        Float testFloat = Float.valueOf(12);
+        Float testFloat = 12f;
         batch.addToTempOverTime(dateTime, testFloat);
-        assertEquals(testFloat,batch.getTempOverTime().get(dateTime));
+        assertEquals(testFloat, batch.getTempOverTime().get(dateTime));
+    }
+
+    @Test
+    void addToHumOverTime() {
+        DateTime dateTime = new DateTime();
+        Float testFloat = 12f;
+        batch.addToHumOverTime(dateTime, testFloat);
+        assertEquals(testFloat, batch.getHumOverTime().get(dateTime));
+    }
+
+    @Test
+    void addToVibOverTime() {
+        DateTime dateTime = new DateTime();
+        Float testFloat = 12f;
+        batch.addToVibOverTime(dateTime, testFloat);
+        assertEquals(testFloat, batch.getVibOverTime().get(dateTime));
     }
 
     @Test
@@ -46,25 +62,31 @@ class BatchTest {
     }
 
     @Test
-    void runningTests(){
+    void runningTests() {
         batch.setRunning(true);
-        assertEquals(true,batch.isRunning());
+        assertTrue(batch.isRunning());
     }
 
     @Test
-    void testOEE(){
-        batch.setOEE();
-        assertEquals(0,batch.getOEE());
+    void testOEE() {
+        batch.setOee();
+        assertEquals(0, batch.getOee());
     }
 
     @Test
-    void testDefectiveProducts(){
+    void testDefectiveProducts() {
         batch.setDefectiveProducts(20);
-        assertEquals(20,batch.getDefectiveProducts());
+        assertEquals(20, batch.getDefectiveProducts());
     }
 
     @Test
-    void tostringTest() {
+    void testAmountProduced() {
+        batch.setAmountProduced(20);
+        assertEquals(20, batch.getAmountProduced());
+    }
+
+    @Test
+    void toStringTest() {
         assertNotNull(batch.toString());
     }
 }

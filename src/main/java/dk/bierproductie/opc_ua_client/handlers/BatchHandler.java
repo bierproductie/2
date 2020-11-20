@@ -7,16 +7,14 @@ import dk.bierproductie.opc_ua_client.enums.Commands;
 import dk.bierproductie.opc_ua_client.enums.node_enums.AdminNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.CommandNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.StatusNodes;
-import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
-import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
 
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class BatchHandler {
 
+    private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private static BatchHandler instance;
     private static Batch currentBatch;
     private final CommandHandler commandHandler;
@@ -24,13 +22,35 @@ public final class BatchHandler {
     private final SubscriptionHandler subscriptionHandler;
     private final DataCollector dataCollector;
 
-    private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-
     public BatchHandler() {
         this.commandHandler = CommandHandler.getInstance();
         this.dataWriter = DataWriter.getInstance();
         this.subscriptionHandler = SubscriptionHandler.getInstance();
         this.dataCollector = DataCollector.getInstance();
+    }
+
+    public static void finishBatch() {
+        currentBatch.setAmountProduced((int) DataCollector.getInstance().readData("produced", AdminNodes.PRODUCED_PRODUCTS.nodeId, false));
+        currentBatch.setDefectiveProducts((int) DataCollector.getInstance().readData("defective", AdminNodes.DEFECTIVE_PRODUCTS.nodeId, false));
+        currentBatch.setOee();
+        String msg = currentBatch.toString();
+        LOGGER.log(Level.INFO, msg);
+    }
+
+    public static Batch getCurrentBatch() {
+        return currentBatch;
+    }
+
+    public static void setCurrentBatch(Batch currentBatch) {
+        BatchHandler.currentBatch = currentBatch;
+    }
+
+    public static void setInstance() {
+        BatchHandler.instance = new BatchHandler();
+    }
+
+    public static BatchHandler getInstance() {
+        return instance;
     }
 
     public void startBatch(Batch batch) throws ExecutionException, InterruptedException {
@@ -50,15 +70,11 @@ public final class BatchHandler {
         }
     }
 
-    public static void finishBatch() {
-        currentBatch.setDefectiveProducts((int) DataCollector.getInstance().readData("accepted", AdminNodes.DEFECTIVE_PRODUCTS.nodeId, false));
-        currentBatch.setOEE();
-        LOGGER.log(Level.INFO, currentBatch.toString());
-    }
-
     public void setupSubscriptions() {
         subscriptionHandler.subscribe(StatusNodes.MACHINE_STATE.nodeId);
         subscriptionHandler.subscribe(StatusNodes.TEMPERATURE.nodeId);
+        subscriptionHandler.subscribe(StatusNodes.HUMIDITY.nodeId, 1000);
+        subscriptionHandler.subscribe(StatusNodes.VIBRATION.nodeId, 1000);  
     }
 
     public static Batch getCurrentBatch() {

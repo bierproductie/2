@@ -14,16 +14,20 @@ public class Batch {
 
     private final float id;
     private final float productType;
-    private float machineSpeed;
     private final float amountToProduce;
+    private final Map<DateTime, Float> tempOverTime;
+    private final Map<DateTime, Float> humOverTime;
+    private final Map<DateTime, Float> vibOverTime;
+    private float machineSpeed;
     private boolean running;
+    private int amountProduced;
+    //private errorFunction ErrorFunction
     private int defectiveProducts;
     private int acceptedProducts;
     private DateTime stateStartTime;
     private DateTime batchStartTime;
     //private double productionTime;
     private double OEE;
-
     //private errorFunction ErrorFunction
     //private int totalProductAmount
     private final Map<DateTime, Float> tempOverTime;
@@ -42,6 +46,8 @@ public class Batch {
         }
         this.amountToProduce = amountToProduce;
         tempOverTime = new HashMap<>();
+        humOverTime = new HashMap<>();
+        vibOverTime = new HashMap<>();
     }
 
     public float getId() {
@@ -60,12 +66,36 @@ public class Batch {
         return amountToProduce;
     }
 
+    public int getAmountProduced() {
+        return amountProduced;
+    }
+
+    public void setAmountProduced(int amountProduced) {
+        this.amountProduced = amountProduced;
+    }
+
     public void addToTempOverTime(DateTime dateTime, Float value) {
         tempOverTime.put(dateTime, value);
     }
 
     public Map<DateTime, Float> getTempOverTime() {
         return tempOverTime;
+    }
+
+    public void addToHumOverTime(DateTime dateTime, Float value) {
+        humOverTime.put(dateTime, value);
+    }
+
+    public Map<DateTime, Float> getHumOverTime() {
+        return humOverTime;
+    }
+
+    public void addToVibOverTime(DateTime dateTime, Float value) {
+        vibOverTime.put(dateTime, value);
+    }
+
+    public Map<DateTime, Float> getVibOverTime() {
+        return vibOverTime;
     }
 
     public boolean isRunning() {
@@ -103,11 +133,11 @@ public class Batch {
         double plannedProductionTime = (this.amountToProduce / this.machineSpeed) * 60;
         double idealCycleTime = plannedProductionTime / this.amountToProduce;
 
-        this.OEE = ((this.acceptedProducts * idealCycleTime) / plannedProductionTime) * 100;
+        this.oee = ((this.acceptedProducts * idealCycleTime) / plannedProductionTime) * 100;
     }
 
-    public double getOEE() {
-        return OEE;
+    public double getOee() {
+        return oee;
     }
 
     @Override

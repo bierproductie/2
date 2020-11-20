@@ -111,11 +111,20 @@ public class Subscription implements Runnable {
                     item.getReadValueId().getNodeId(), value.getValue());
             LOGGER.log(Level.INFO, msg);
             BatchHandler.getCurrentBatch().addToTempOverTime(value.getSourceTime(), (Float) value.getValue().getValue());
+        } else if (item.getReadValueId().getNodeId() == StatusNodes.HUMIDITY.nodeId) {
+            String msg = String.format("Humidity Subscription value received: item=%s, value=%s",
+                    item.getReadValueId().getNodeId(), value.getValue());
+            LOGGER.log(Level.INFO, msg);
+            BatchHandler.getCurrentBatch().addToHumOverTime(value.getSourceTime(), (Float) value.getValue().getValue());
+        } else if (item.getReadValueId().getNodeId() == StatusNodes.VIBRATION.nodeId) {
+            String msg = String.format("Vibration Subscription value received: item=%s, value=%s",
+                    item.getReadValueId().getNodeId(), value.getValue());
+            LOGGER.log(Level.INFO, msg);
+            BatchHandler.getCurrentBatch().addToVibOverTime(value.getSourceTime(), (Float) value.getValue().getValue());
         } else {
             String msg = String.format("Subscription value received: item=%s, value=%s",
                     item.getReadValueId().getNodeId(), value.getValue());
             LOGGER.log(Level.INFO, msg);
         }
     }
-
 }
