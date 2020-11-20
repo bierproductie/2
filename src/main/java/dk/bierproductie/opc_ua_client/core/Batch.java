@@ -14,19 +14,18 @@ public class Batch {
 
     private final float id;
     private final float productType;
-    private float machineSpeed;
     private final float amountToProduce;
+    private final Map<DateTime, Float> tempOverTime;
+    private final Map<DateTime, Float> humOverTime;
+    private final Map<DateTime, Float> vibOverTime;
+    private float machineSpeed;
     private boolean running;
+    private int amountProduced;
+    //private errorFunction ErrorFunction
     private int defectiveProducts;
     private int acceptedProducts;
     //private double productionTime;
-    private double OEE;
-
-    //private errorFunction ErrorFunction
-    //private int totalProductAmount
-    private final Map<DateTime,Float> tempOverTime;
-    private final Map<DateTime,Float> humOverTime;
-    private final Map<DateTime,Float> vibOverTime;
+    private double oee;
 
     public Batch(int id, Products productType, float machineSpeed, float amountToProduce) {
         this.id = id;
@@ -62,8 +61,16 @@ public class Batch {
         return amountToProduce;
     }
 
+    public int getAmountProduced() {
+        return amountProduced;
+    }
+
+    public void setAmountProduced(int amountProduced) {
+        this.amountProduced = amountProduced;
+    }
+
     public void addToTempOverTime(DateTime dateTime, Float value) {
-        tempOverTime.put(dateTime,value);
+        tempOverTime.put(dateTime, value);
     }
 
     public Map<DateTime, Float> getTempOverTime() {
@@ -71,7 +78,7 @@ public class Batch {
     }
 
     public void addToHumOverTime(DateTime dateTime, Float value) {
-        humOverTime.put(dateTime,value);
+        humOverTime.put(dateTime, value);
     }
 
     public Map<DateTime, Float> getHumOverTime() {
@@ -79,7 +86,7 @@ public class Batch {
     }
 
     public void addToVibOverTime(DateTime dateTime, Float value) {
-        vibOverTime.put(dateTime,value);
+        vibOverTime.put(dateTime, value);
     }
 
     public Map<DateTime, Float> getVibOverTime() {
@@ -100,28 +107,28 @@ public class Batch {
 
     public void setDefectiveProducts(int defectiveProducts) {
         this.defectiveProducts = defectiveProducts;
-        this.acceptedProducts = (int)amountToProduce - defectiveProducts;
+        this.acceptedProducts = (int) amountToProduce - defectiveProducts;
+    }
+
+    public void setOee() {
+        double plannedProductionTime = (this.amountToProduce / this.machineSpeed) * 60;
+        double idealCycleTime = plannedProductionTime / this.amountToProduce;
+
+        this.oee = ((this.acceptedProducts * idealCycleTime) / plannedProductionTime) * 100;
+    }
+
+    public double getOee() {
+        return oee;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Batch{id=%s, productType=%s, machineSpeed=%s, amountToProduce=%s, running=%s, amountProduced=%d, defectiveProducts=%d, acceptedProducts=%d, OEE=%s, tempOverTime=%s}", id, productType, machineSpeed, amountToProduce, running, amountProduced, defectiveProducts, acceptedProducts, oee, tempOverTime);
     }
 
     class IncorrectMachineSpeedException extends Exception {
         public IncorrectMachineSpeedException(String errorMessage) {
             super(errorMessage);
         }
-    }
-
-    public void setOEE(){
-        double plannedProductionTime = (this.amountToProduce / this.machineSpeed) * 60;
-        double idealCycleTime = plannedProductionTime / this.amountToProduce;
-
-        this.OEE = ((this.acceptedProducts * idealCycleTime) / plannedProductionTime) * 100;
-    }
-
-    public double getOEE() {
-        return OEE;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Batch{id=%s, productType=%s, machineSpeed=%s, amountToProduce=%s, running=%s, defectiveProducts=%d, acceptedProducts=%d, OEE=%s, tempOverTime=%s}", id, productType, machineSpeed, amountToProduce, running, defectiveProducts, acceptedProducts, OEE, tempOverTime);
     }
 }
