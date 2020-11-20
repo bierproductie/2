@@ -13,8 +13,15 @@ class BatchTest {
 
     @BeforeEach
     void setUp() {
-        batch = new Batch(1, Products.PILSNER, 800, 1000);
         batch = new Batch(1, Products.PILSNER, 500, 1000);
+    }
+
+    @Test
+    void wrongSpeed(){
+        Batch testBatch = new Batch(1, Products.PILSNER, 800, 1000);
+        assertEquals(0, testBatch.getMachineSpeed());
+        testBatch = new Batch(1, Products.PILSNER, -100, 1000);
+        assertEquals(0, testBatch.getMachineSpeed());
     }
 
     @Test
