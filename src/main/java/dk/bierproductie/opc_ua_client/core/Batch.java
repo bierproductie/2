@@ -118,8 +118,16 @@ public class Batch {
         this.stateStartTime = stateStartTime;
     }
 
+    public DateTime getStateStartTime() {
+        return stateStartTime;
+    }
+
     public void setBatchStartTime(DateTime batchStartTime) {
         this.batchStartTime = batchStartTime;
+    }
+
+    public DateTime getBatchStartTime() {
+        return batchStartTime;
     }
 
     class IncorrectMachineSpeedException extends Exception {
