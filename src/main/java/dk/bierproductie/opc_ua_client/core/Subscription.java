@@ -31,14 +31,10 @@ public class Subscription implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private final OpcUaClient client;
     private final NodeId nodeId;
-    private final long sleepTime;
-    private final DataCollector dataCollector;
 
-    public Subscription(OpcUaClient client, NodeId nodeId, long sleepTime) {
+    public Subscription(OpcUaClient client, NodeId nodeId) {
         this.client = client;
         this.nodeId = nodeId;
-        this.sleepTime = sleepTime;
-        dataCollector = DataCollector.getInstance();
     }
 
     public void subscribe() throws InterruptedException, ExecutionException {
@@ -98,7 +94,13 @@ public class Subscription implements Runnable {
             String state = MachineState.getStateFromValue(stateInt).output;
             String msg = String.format("MachineState Subscription value received: item=%s, value=%s, prettyValue=%s",
                     item.getReadValueId().getNodeId(), value.getValue(), state);
-            if (stateInt ==17){
+            if (stateInt == 4) {
+                BatchHandler.getCurrentBatch().setStateStartTime(value.getSourceTime());
+            }
+            if (stateInt == 6) {
+                BatchHandler.getCurrentBatch().setBatchStartTime(value.getSourceTime());
+            }
+            if (stateInt == 17){
                 HandlerFactory.client.getSubscriptionManager().clearSubscriptions();
                 BatchHandler.finishBatch();
                 BatchHandler.getCurrentBatch().setRunning(false);
