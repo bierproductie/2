@@ -33,14 +33,10 @@ public class Subscription implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private final OpcUaClient client;
     private final NodeId nodeId;
-    private final long sleepTime;
-    private final DataCollector dataCollector;
 
-    public Subscription(OpcUaClient client, NodeId nodeId, long sleepTime) {
+    public Subscription(OpcUaClient client, NodeId nodeId) {
         this.client = client;
         this.nodeId = nodeId;
-        this.sleepTime = sleepTime;
-        dataCollector = DataCollector.getInstance();
     }
 
     public static void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
