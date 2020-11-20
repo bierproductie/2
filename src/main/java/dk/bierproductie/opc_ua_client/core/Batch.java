@@ -90,7 +90,10 @@ public class Batch {
     }
 
     public void setOEE(){
-        this.OEE = ((this.acceptedProducts * (this.amountToProduce/this.machineSpeed)) / ((this.amountToProduce/this.machineSpeed) * this.amountToProduce)) * 100;
+        double plannedProductionTime = (this.amountToProduce / this.machineSpeed) * 60;
+        double idealCycleTime = plannedProductionTime / this.amountToProduce;
+
+        this.OEE = ((this.acceptedProducts * idealCycleTime) / plannedProductionTime) * 100;
     }
 
     public double getOEE() {
