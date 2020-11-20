@@ -60,6 +60,7 @@ public final class BatchHandler {
         subscriptionHandler.subscribe(StatusNodes.MACHINE_STATE.nodeId, 1000);
         subscriptionHandler.subscribe(StatusNodes.TEMPERATURE.nodeId, 1000);
         subscriptionHandler.subscribe(StatusNodes.HUMIDITY.nodeId, 1000);
+        subscriptionHandler.subscribe(StatusNodes.VIBRATION.nodeId, 1000);
     }
 
     public static Batch getCurrentBatch() {

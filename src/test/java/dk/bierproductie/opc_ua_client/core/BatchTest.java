@@ -34,6 +34,14 @@ class BatchTest {
     }
 
     @Test
+    void addToVibOverTime() {
+        DateTime dateTime = new DateTime();
+        Float testFloat = 12f;
+        batch.addToVibOverTime(dateTime, testFloat);
+        assertEquals(testFloat,batch.getVibOverTime().get(dateTime));
+    }
+
+    @Test
     void getId() {
         assertEquals(1, batch.getId());
     }
