@@ -1,9 +1,10 @@
 package dk.bierproductie.opc_ua_client.core;
 
 import dk.bierproductie.opc_ua_client.enums.MachineState;
+import dk.bierproductie.opc_ua_client.enums.node_enums.InventoryNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.StatusNodes;
 import dk.bierproductie.opc_ua_client.handlers.BatchHandler;
-import dk.bierproductie.opc_ua_client.handlers.HandlerFactory;
+import dk.bierproductie.opc_ua_client.handlers.SubscriptionHandler;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
@@ -20,6 +21,7 @@ import org.eclipse.milo.opcua.stack.core.types.structured.ReadValueId;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
@@ -35,6 +37,40 @@ public class Subscription implements Runnable {
     public Subscription(OpcUaClient client, NodeId nodeId) {
         this.client = client;
         this.nodeId = nodeId;
+    }
+
+    public static void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
+        if (item.getReadValueId().getNodeId() == StatusNodes.MACHINE_STATE.nodeId) {
+            int stateInt = (int) value.getValue().getValue();
+            String state = Objects.requireNonNull(MachineState.getStateFromValue(stateInt)).output;
+            String msg = String.format("MachineState Subscription value received: item=%s, value=%s, prettyValue=%s",
+                    item.getReadValueId().getNodeId(), value.getValue(), state);
+            if (stateInt == 17) {
+                SubscriptionHandler.removeSubscriptions();
+                BatchHandler.finishBatch();
+                BatchHandler.getCurrentBatch().setRunning(false);
+            }
+            LOGGER.log(Level.INFO, msg);
+        } else if (item.getReadValueId().getNodeId() == StatusNodes.TEMPERATURE.nodeId) {
+            String msg = String.format("Temperature Subscription value received: item=%s, value=%s",
+                    item.getReadValueId().getNodeId(), value.getValue());
+            LOGGER.log(Level.INFO, msg);
+            BatchHandler.getCurrentBatch().addToTempOverTime(value.getSourceTime(), (Float) value.getValue().getValue());
+        } else if (item.getReadValueId().getNodeId() == StatusNodes.HUMIDITY.nodeId) {
+            String msg = String.format("Humidity Subscription value received: item=%s, value=%s",
+                    item.getReadValueId().getNodeId(), value.getValue());
+            LOGGER.log(Level.INFO, msg);
+            BatchHandler.getCurrentBatch().addToHumOverTime(value.getSourceTime(), (Float) value.getValue().getValue());
+        } else if (item.getReadValueId().getNodeId() == StatusNodes.VIBRATION.nodeId) {
+            String msg = String.format("Vibration Subscription value received: item=%s, value=%s",
+                    item.getReadValueId().getNodeId(), value.getValue());
+            LOGGER.log(Level.INFO, msg);
+            BatchHandler.getCurrentBatch().addToVibOverTime(value.getSourceTime(), (Float) value.getValue().getValue());
+        } else {
+            String msg = String.format("Subscription value received: item=%s, value=%s",
+                    item.getReadValueId().getNodeId(), value.getValue());
+            LOGGER.log(Level.INFO, msg);
+        }
     }
 
     public void subscribe() throws InterruptedException, ExecutionException {
@@ -75,6 +111,9 @@ public class Subscription implements Runnable {
                 LOGGER.log(Level.INFO, msg);
             }
         }
+        if (!InventoryNodes.isInventoryNode(nodeId)) {
+            SubscriptionHandler.addSubscription(subscription);
+        }
     }
 
     @Override
@@ -85,46 +124,6 @@ public class Subscription implements Runnable {
             String msg = "hmmm";
             LOGGER.log(Level.WARNING, msg);
             Thread.currentThread().interrupt();
-        }
-    }
-
-    public static void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
-        if (item.getReadValueId().getNodeId() == StatusNodes.MACHINE_STATE.nodeId) {
-            int stateInt = (int)value.getValue().getValue();
-            String state = MachineState.getStateFromValue(stateInt).output;
-            String msg = String.format("MachineState Subscription value received: item=%s, value=%s, prettyValue=%s",
-                    item.getReadValueId().getNodeId(), value.getValue(), state);
-            if (stateInt == 4) {
-                BatchHandler.getCurrentBatch().setStateStartTime(value.getSourceTime());
-            }
-            if (stateInt == 6) {
-                BatchHandler.getCurrentBatch().setBatchStartTime(value.getSourceTime());
-            }
-            if (stateInt == 17){
-                HandlerFactory.client.getSubscriptionManager().clearSubscriptions();
-                BatchHandler.finishBatch();
-                BatchHandler.getCurrentBatch().setRunning(false);
-            }
-            LOGGER.log(Level.INFO, msg);
-        } else if (item.getReadValueId().getNodeId() == StatusNodes.TEMPERATURE.nodeId) {
-            String msg = String.format("Temperature Subscription value received: item=%s, value=%s",
-                    item.getReadValueId().getNodeId(), value.getValue());
-            LOGGER.log(Level.INFO, msg);
-            BatchHandler.getCurrentBatch().addToTempOverTime(value.getSourceTime(), (Float) value.getValue().getValue());
-        } else if (item.getReadValueId().getNodeId() == StatusNodes.HUMIDITY.nodeId) {
-            String msg = String.format("Humidity Subscription value received: item=%s, value=%s",
-                    item.getReadValueId().getNodeId(), value.getValue());
-            LOGGER.log(Level.INFO, msg);
-            BatchHandler.getCurrentBatch().addToHumOverTime(value.getSourceTime(), (Float) value.getValue().getValue());
-        } else if (item.getReadValueId().getNodeId() == StatusNodes.VIBRATION.nodeId) {
-            String msg = String.format("Vibration Subscription value received: item=%s, value=%s",
-                    item.getReadValueId().getNodeId(), value.getValue());
-            LOGGER.log(Level.INFO, msg);
-            BatchHandler.getCurrentBatch().addToVibOverTime(value.getSourceTime(), (Float) value.getValue().getValue());
-        } else {
-            String msg = String.format("Subscription value received: item=%s, value=%s",
-                    item.getReadValueId().getNodeId(), value.getValue());
-            LOGGER.log(Level.INFO, msg);
         }
     }
 }
