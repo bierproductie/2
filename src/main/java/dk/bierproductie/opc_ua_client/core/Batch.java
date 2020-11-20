@@ -27,10 +27,9 @@ public class Batch {
     private DateTime stateStartTime;
     private DateTime batchStartTime;
     //private double productionTime;
-    private double OEE;
+    private double oee;
     //private errorFunction ErrorFunction
     //private int totalProductAmount
-    private final Map<DateTime, Float> tempOverTime;
 
     public Batch(int id, Products productType, float machineSpeed, float amountToProduce) {
         this.id = id;
@@ -129,7 +128,7 @@ public class Batch {
         }
     }
 
-    public void setOEE() {
+    public void setOee() {
         double plannedProductionTime = (this.amountToProduce / this.machineSpeed) * 60;
         double idealCycleTime = plannedProductionTime / this.amountToProduce;
 
@@ -152,7 +151,7 @@ public class Batch {
                 ", acceptedProducts=" + acceptedProducts +
                 ", stateStartTime=" + stateStartTime +
                 ", batchStartTime=" + batchStartTime +
-                ", OEE=" + OEE +
+                ", Oee=" + oee +
                 '}';
     }
 }
