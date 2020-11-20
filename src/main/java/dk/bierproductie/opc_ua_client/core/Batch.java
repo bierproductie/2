@@ -19,12 +19,14 @@ public class Batch {
     private boolean running;
     private int defectiveProducts;
     private int acceptedProducts;
+    private DateTime stateStartTime;
+    private DateTime batchStartTime;
     //private double productionTime;
     private double OEE;
 
     //private errorFunction ErrorFunction
     //private int totalProductAmount
-    private final Map<DateTime,Float> tempOverTime;
+    private final Map<DateTime, Float> tempOverTime;
 
     public Batch(int id, Products productType, float machineSpeed, float amountToProduce) {
         this.id = id;
@@ -59,7 +61,7 @@ public class Batch {
     }
 
     public void addToTempOverTime(DateTime dateTime, Float value) {
-        tempOverTime.put(dateTime,value);
+        tempOverTime.put(dateTime, value);
     }
 
     public Map<DateTime, Float> getTempOverTime() {
@@ -80,7 +82,15 @@ public class Batch {
 
     public void setDefectiveProducts(int defectiveProducts) {
         this.defectiveProducts = defectiveProducts;
-        this.acceptedProducts = (int)amountToProduce - defectiveProducts;
+        this.acceptedProducts = (int) amountToProduce - defectiveProducts;
+    }
+
+    public void setStateStartTime(DateTime stateStartTime) {
+        this.stateStartTime = stateStartTime;
+    }
+
+    public void setBatchStartTime(DateTime batchStartTime) {
+        this.batchStartTime = batchStartTime;
     }
 
     class IncorrectMachineSpeedException extends Exception {
@@ -89,7 +99,7 @@ public class Batch {
         }
     }
 
-    public void setOEE(){
+    public void setOEE() {
         double plannedProductionTime = (this.amountToProduce / this.machineSpeed) * 60;
         double idealCycleTime = plannedProductionTime / this.amountToProduce;
 
@@ -102,6 +112,17 @@ public class Batch {
 
     @Override
     public String toString() {
-        return String.format("Batch{id=%s, productType=%s, machineSpeed=%s, amountToProduce=%s, running=%s, defectiveProducts=%d, acceptedProducts=%d, OEE=%s, tempOverTime=%s}", id, productType, machineSpeed, amountToProduce, running, defectiveProducts, acceptedProducts, OEE, tempOverTime);
+        return "Batch{" +
+                "id=" + id +
+                ", productType=" + productType +
+                ", machineSpeed=" + machineSpeed +
+                ", amountToProduce=" + amountToProduce +
+                ", running=" + running +
+                ", defectiveProducts=" + defectiveProducts +
+                ", acceptedProducts=" + acceptedProducts +
+                ", stateStartTime=" + stateStartTime +
+                ", batchStartTime=" + batchStartTime +
+                ", OEE=" + OEE +
+                '}';
     }
 }
