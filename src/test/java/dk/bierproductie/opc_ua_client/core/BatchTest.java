@@ -26,6 +26,14 @@ class BatchTest {
     }
 
     @Test
+    void addToHumOverTime() {
+        DateTime dateTime = new DateTime();
+        Float testFloat = 12f;
+        batch.addToHumOverTime(dateTime, testFloat);
+        assertEquals(testFloat,batch.getHumOverTime().get(dateTime));
+    }
+
+    @Test
     void getId() {
         assertEquals(1, batch.getId());
     }

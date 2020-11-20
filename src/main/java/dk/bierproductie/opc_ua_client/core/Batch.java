@@ -25,6 +25,7 @@ public class Batch {
     //private errorFunction ErrorFunction
     //private int totalProductAmount
     private final Map<DateTime,Float> tempOverTime;
+    private final Map<DateTime,Float> humOverTime;
 
     public Batch(int id, Products productType, float machineSpeed, float amountToProduce) {
         this.id = id;
@@ -40,6 +41,7 @@ public class Batch {
         }
         this.amountToProduce = amountToProduce;
         tempOverTime = new HashMap<>();
+        humOverTime = new HashMap<>();
     }
 
     public float getId() {
@@ -64,6 +66,14 @@ public class Batch {
 
     public Map<DateTime, Float> getTempOverTime() {
         return tempOverTime;
+    }
+
+    public void addToHumOverTime(DateTime dateTime, Float value) {
+        humOverTime.put(dateTime,value);
+    }
+
+    public Map<DateTime, Float> getHumOverTime() {
+        return humOverTime;
     }
 
     public boolean isRunning() {
