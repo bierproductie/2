@@ -56,4 +56,15 @@ class BatchTest {
         batch.setOEE();
         assertEquals(0,batch.getOEE());
     }
+
+    @Test
+    void testDefectiveProducts(){
+        batch.setDefectiveProducts(20);
+        assertEquals(20,batch.getDefectiveProducts());
+    }
+
+    @Test
+    void tostringTest() {
+        assertNotNull(batch.toString());
+    }
 }
