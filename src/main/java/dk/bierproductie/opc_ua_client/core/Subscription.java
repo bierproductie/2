@@ -1,7 +1,7 @@
 package dk.bierproductie.opc_ua_client.core;
 
 import dk.bierproductie.opc_ua_client.enums.MachineState;
-import dk.bierproductie.opc_ua_client.enums.node_enums.InventoryNodes;
+import dk.bierproductie.opc_ua_client.enums.node_enums.MachineNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.StatusNodes;
 import dk.bierproductie.opc_ua_client.handlers.BatchHandler;
 import dk.bierproductie.opc_ua_client.handlers.SubscriptionHandler;
@@ -111,7 +111,7 @@ public class Subscription implements Runnable {
                 LOGGER.log(Level.INFO, msg);
             }
         }
-        if (!InventoryNodes.isInventoryNode(nodeId)) {
+        if (!MachineNodes.isInventoryNode(nodeId)) {
             SubscriptionHandler.addSubscription(subscription);
         }
     }
