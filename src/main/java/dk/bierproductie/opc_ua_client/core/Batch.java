@@ -24,8 +24,12 @@ public class Batch {
     //private errorFunction ErrorFunction
     private int defectiveProducts;
     private int acceptedProducts;
+    private DateTime stateStartTime;
+    private DateTime batchStartTime;
     //private double productionTime;
     private double oee;
+    //private errorFunction ErrorFunction
+    //private int totalProductAmount
 
     public Batch(int id, Products productType, float machineSpeed, float amountToProduce) {
         this.id = id;
@@ -110,6 +114,28 @@ public class Batch {
         this.acceptedProducts = (int) amountToProduce - defectiveProducts;
     }
 
+    public void setStateStartTime(DateTime stateStartTime) {
+        this.stateStartTime = stateStartTime;
+    }
+
+    public DateTime getStateStartTime() {
+        return stateStartTime;
+    }
+
+    public void setBatchStartTime(DateTime batchStartTime) {
+        this.batchStartTime = batchStartTime;
+    }
+
+    public DateTime getBatchStartTime() {
+        return batchStartTime;
+    }
+
+    class IncorrectMachineSpeedException extends Exception {
+        public IncorrectMachineSpeedException(String errorMessage) {
+            super(errorMessage);
+        }
+    }
+
     public void setOee() {
         double plannedProductionTime = (this.amountToProduce / this.machineSpeed) * 60;
         double idealCycleTime = plannedProductionTime / this.amountToProduce;
@@ -123,12 +149,17 @@ public class Batch {
 
     @Override
     public String toString() {
-        return String.format("Batch{id=%s, productType=%s, machineSpeed=%s, amountToProduce=%s, running=%s, amountProduced=%d, defectiveProducts=%d, acceptedProducts=%d, OEE=%s, tempOverTime=%s}", id, productType, machineSpeed, amountToProduce, running, amountProduced, defectiveProducts, acceptedProducts, oee, tempOverTime);
-    }
-
-    class IncorrectMachineSpeedException extends Exception {
-        public IncorrectMachineSpeedException(String errorMessage) {
-            super(errorMessage);
-        }
+        return "Batch{" +
+                "id=" + id +
+                ", productType=" + productType +
+                ", machineSpeed=" + machineSpeed +
+                ", amountToProduce=" + amountToProduce +
+                ", running=" + running +
+                ", defectiveProducts=" + defectiveProducts +
+                ", acceptedProducts=" + acceptedProducts +
+                ", stateStartTime=" + stateStartTime +
+                ", batchStartTime=" + batchStartTime +
+                ", Oee=" + oee +
+                '}';
     }
 }

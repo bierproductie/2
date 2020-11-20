@@ -89,4 +89,18 @@ class BatchTest {
     void toStringTest() {
         assertNotNull(batch.toString());
     }
+
+    @Test
+    void batchStartTimeTest() {
+        DateTime dateTime = new DateTime();
+        batch.setBatchStartTime(dateTime);
+        assertEquals(dateTime,batch.getBatchStartTime());
+    }
+
+    @Test
+    void stateStartTimeTest() {
+        DateTime dateTime = new DateTime();
+        batch.setStateStartTime(dateTime);
+        assertEquals(dateTime,batch.getStateStartTime());
+    }
 }
