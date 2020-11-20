@@ -73,23 +73,8 @@ public final class BatchHandler {
     public void setupSubscriptions() {
         subscriptionHandler.subscribe(StatusNodes.MACHINE_STATE.nodeId);
         subscriptionHandler.subscribe(StatusNodes.TEMPERATURE.nodeId);
-        subscriptionHandler.subscribe(StatusNodes.HUMIDITY.nodeId, 1000);
-        subscriptionHandler.subscribe(StatusNodes.VIBRATION.nodeId, 1000);  
+        subscriptionHandler.subscribe(StatusNodes.HUMIDITY.nodeId);
+        subscriptionHandler.subscribe(StatusNodes.VIBRATION.nodeId);
     }
 
-    public static Batch getCurrentBatch() {
-        return currentBatch;
-    }
-
-    public static void setCurrentBatch(Batch currentBatch) {
-        BatchHandler.currentBatch = currentBatch;
-    }
-
-    public static void setInstance() {
-        BatchHandler.instance = new BatchHandler();
-    }
-
-    public static BatchHandler getInstance() {
-        return instance;
-    }
 }
