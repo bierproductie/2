@@ -1,5 +1,6 @@
 package dk.bierproductie.opc_ua_client.core;
 
+import com.google.gson.Gson;
 import dk.bierproductie.opc_ua_client.enums.Products;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DateTime;
 import org.junit.jupiter.api.BeforeEach;
@@ -116,5 +117,13 @@ class BatchTest {
         long dateTime = new DateTime().getJavaTime();
         batch.addStateChangeDuration(dateTime,"testState");
         assertEquals(dateTime,batch.getStateDurationTime().get("testState"));
+    }
+
+    @Test
+    void serializeAndDeserializeBatchTest() {
+        Gson gson = new Gson();
+        String testJson = batch.json();
+        Batch result = gson.fromJson(testJson,Batch.class);
+        assertEquals(batch.getId(),result.getId());
     }
 }
