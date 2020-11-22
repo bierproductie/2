@@ -19,7 +19,7 @@ public class RunOpcUaClient {
         LOGGER.log(Level.WARNING, "Application stopped...");
         HandlerFactory.getInstance(true);
         BatchHandler batchHandler = BatchHandler.getInstance();
-        Batch batch = new Batch(3, Products.PILSNER, 600, 100);
+        Batch batch = new Batch(3, Products.PILSNER, 600, 300);
         batchHandler.startBatch(batch);
     }
 }
