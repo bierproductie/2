@@ -99,15 +99,22 @@ class BatchTest {
 
     @Test
     void batchStartTimeTest() {
-        DateTime dateTime = new DateTime();
+        long dateTime = new DateTime().getJavaTime();
         batch.setBatchStartTime(dateTime);
         assertEquals(dateTime,batch.getBatchStartTime());
     }
 
     @Test
     void stateStartTimeTest() {
-        DateTime dateTime = new DateTime();
+        long dateTime = new DateTime().getJavaTime();
         batch.setStateStartTime(dateTime);
         assertEquals(dateTime,batch.getStateStartTime());
+    }
+
+    @Test
+    void stateChangeTimeTest() {
+        long dateTime = new DateTime().getJavaTime();
+        batch.addStateChangeDuration(dateTime,"testState");
+        assertEquals(dateTime,batch.getStateDurationTime().get("testState"));
     }
 }
