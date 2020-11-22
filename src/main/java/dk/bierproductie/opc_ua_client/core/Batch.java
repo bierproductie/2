@@ -48,7 +48,7 @@ public class Batch {
         tempOverTime = new HashMap<>();
         humOverTime = new HashMap<>();
         vibOverTime = new HashMap<>();
-        stateDurationTime = new HashMap<String, Long>();
+        stateDurationTime = new HashMap<>();
     }
 
     public float getId() {
@@ -140,6 +140,10 @@ public class Batch {
 
     public void addStateChangeDuration(long time, String state){
         stateDurationTime.put(state,time);
+    }
+
+    public Map<String, Long> getStateDurationTime() {
+        return stateDurationTime;
     }
 
     public void setOee() {
