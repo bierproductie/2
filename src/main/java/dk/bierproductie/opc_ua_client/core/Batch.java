@@ -18,14 +18,15 @@ public class Batch {
     private final Map<DateTime, Float> tempOverTime;
     private final Map<DateTime, Float> humOverTime;
     private final Map<DateTime, Float> vibOverTime;
+    private final Map<String, Long> stateDurationTime;
     private float machineSpeed;
     private boolean running;
     private int amountProduced;
     //private errorFunction ErrorFunction
     private int defectiveProducts;
     private int acceptedProducts;
-    private DateTime stateStartTime;
-    private DateTime batchStartTime;
+    private long stateStartTime;
+    private long batchStartTime;
     //private double productionTime;
     private double oee;
     //private errorFunction ErrorFunction
@@ -47,6 +48,7 @@ public class Batch {
         tempOverTime = new HashMap<>();
         humOverTime = new HashMap<>();
         vibOverTime = new HashMap<>();
+        stateDurationTime = new HashMap<String, Long>();
     }
 
     public float getId() {
@@ -114,19 +116,19 @@ public class Batch {
         this.acceptedProducts = (int) amountToProduce - defectiveProducts;
     }
 
-    public void setStateStartTime(DateTime stateStartTime) {
+    public void setStateStartTime(long stateStartTime) {
         this.stateStartTime = stateStartTime;
     }
 
-    public DateTime getStateStartTime() {
+    public long getStateStartTime() {
         return stateStartTime;
     }
 
-    public void setBatchStartTime(DateTime batchStartTime) {
+    public void setBatchStartTime(long batchStartTime) {
         this.batchStartTime = batchStartTime;
     }
 
-    public DateTime getBatchStartTime() {
+    public long getBatchStartTime() {
         return batchStartTime;
     }
 
@@ -134,6 +136,10 @@ public class Batch {
         public IncorrectMachineSpeedException(String errorMessage) {
             super(errorMessage);
         }
+    }
+
+    public void addStateChangeDuration(long time, String state){
+        stateDurationTime.put(state,time);
     }
 
     public void setOee() {
@@ -152,14 +158,16 @@ public class Batch {
         return "Batch{" +
                 "id=" + id +
                 ", productType=" + productType +
-                ", machineSpeed=" + machineSpeed +
                 ", amountToProduce=" + amountToProduce +
+                ", stateDurationTime=" + stateDurationTime +
+                ", machineSpeed=" + machineSpeed +
                 ", running=" + running +
+                ", amountProduced=" + amountProduced +
                 ", defectiveProducts=" + defectiveProducts +
                 ", acceptedProducts=" + acceptedProducts +
                 ", stateStartTime=" + stateStartTime +
                 ", batchStartTime=" + batchStartTime +
-                ", Oee=" + oee +
+                ", oee=" + oee +
                 '}';
     }
 }
