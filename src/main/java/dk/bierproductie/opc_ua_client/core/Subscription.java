@@ -5,6 +5,7 @@ import dk.bierproductie.opc_ua_client.enums.node_enums.MachineNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.StatusNodes;
 import dk.bierproductie.opc_ua_client.handlers.BatchHandler;
 import dk.bierproductie.opc_ua_client.handlers.SubscriptionHandler;
+import dk.bierproductie.opc_ua_client.subscription_logic.MachineStateSubscription;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
@@ -41,21 +42,13 @@ public class Subscription implements Runnable {
 
     public static void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
         if (item.getReadValueId().getNodeId() == StatusNodes.MACHINE_STATE.nodeId) {
-            int stateInt = (int) value.getValue().getValue();
-            String state = Objects.requireNonNull(MachineState.getStateFromValue(stateInt)).output;
-            String msg = String.format("MachineState Subscription value received: item=%s, value=%s, prettyValue=%s",
-                    item.getReadValueId().getNodeId(), value.getValue(), state);
-            if (stateInt == 17) {
-                SubscriptionHandler.removeSubscriptions();
-                BatchHandler.finishBatch();
-                BatchHandler.getCurrentBatch().setRunning(false);
-            }
-            LOGGER.log(Level.INFO, msg);
+            MachineStateSubscription.handleData(item, value);
         } else if (item.getReadValueId().getNodeId() == StatusNodes.TEMPERATURE.nodeId) {
             String msg = String.format("Temperature Subscription value received: item=%s, value=%s",
                     item.getReadValueId().getNodeId(), value.getValue());
             LOGGER.log(Level.INFO, msg);
             BatchHandler.getCurrentBatch().addToTempOverTime(value.getSourceTime(), (Float) value.getValue().getValue());
+
         } else if (item.getReadValueId().getNodeId() == StatusNodes.HUMIDITY.nodeId) {
             String msg = String.format("Humidity Subscription value received: item=%s, value=%s",
                     item.getReadValueId().getNodeId(), value.getValue());
