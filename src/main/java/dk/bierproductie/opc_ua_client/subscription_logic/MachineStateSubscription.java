@@ -45,7 +45,7 @@ public class MachineStateSubscription {
 
     private static void setStateDuration(DataValue value, String state) {
         long stateChangeTime = value.getSourceTime().getJavaTime();
-        BatchHandler.getCurrentBatch().addStateChangeDuration(stateChangeTime /1000, state);
+        BatchHandler.getCurrentBatch().addStateChangeDuration(stateChangeTime, state);
     }
 
 
