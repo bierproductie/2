@@ -1,5 +1,6 @@
 package dk.bierproductie.opc_ua_client.core;
 
+import com.google.gson.Gson;
 import dk.bierproductie.opc_ua_client.enums.Products;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DateTime;
 
@@ -173,5 +174,10 @@ public class Batch {
                 ", batchStartTime=" + batchStartTime +
                 ", oee=" + oee +
                 '}';
+    }
+
+    public String json(){
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }
