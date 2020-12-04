@@ -10,15 +10,22 @@ public class HTTPHandler {
 
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-    private URL url;
+    private HTTPHandler instance;
     private HttpURLConnection connection;
 
-    public HTTPHandler(URL url) {
-        this.url = url;
+    public HTTPHandler(String urlString) {
         try {
+            URL url = new URL(urlString);
             connection = (HttpURLConnection)url.openConnection();
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE,"HTTPManger connection not established");
         }
+    }
+
+    public HTTPHandler getInstance(String urlString) {
+        if (instance == null) {
+            instance = new HTTPHandler(urlString);
+        }
+        return instance;
     }
 }
