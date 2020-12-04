@@ -28,6 +28,7 @@ public class HandlerFactory {
             machineHandler.setUpSimulator();
             Thread.sleep(1000);
         }
+        HTTPHandler.setInstance("localhost"); //todo get backend url from somewhere
         BatchHandler.setInstance();
     }
 
