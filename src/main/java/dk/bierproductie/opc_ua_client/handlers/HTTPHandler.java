@@ -10,7 +10,7 @@ public class HTTPHandler {
 
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-    private HTTPHandler instance;
+    private static HTTPHandler instance;
     private HttpURLConnection connection;
 
     public HTTPHandler(String urlString) {
@@ -22,10 +22,11 @@ public class HTTPHandler {
         }
     }
 
-    public HTTPHandler getInstance(String urlString) {
-        if (instance == null) {
-            instance = new HTTPHandler(urlString);
-        }
+    public static HTTPHandler getInstance(String urlString) {
         return instance;
+    }
+
+    public static void setInstance(String urlString) {
+        HTTPHandler.instance = new HTTPHandler(urlString);
     }
 }
