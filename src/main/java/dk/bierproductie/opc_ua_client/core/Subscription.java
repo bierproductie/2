@@ -1,9 +1,11 @@
 package dk.bierproductie.opc_ua_client.core;
 
+import com.google.gson.Gson;
 import dk.bierproductie.opc_ua_client.enums.MachineState;
 import dk.bierproductie.opc_ua_client.enums.node_enums.MachineNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.StatusNodes;
 import dk.bierproductie.opc_ua_client.handlers.BatchHandler;
+import dk.bierproductie.opc_ua_client.handlers.HTTPHandler;
 import dk.bierproductie.opc_ua_client.handlers.SubscriptionHandler;
 import dk.bierproductie.opc_ua_client.subscription_logic.MachineStateSubscription;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
@@ -34,10 +36,14 @@ public class Subscription implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private final OpcUaClient client;
     private final NodeId nodeId;
+    private boolean constant;
+    private static Gson gson;
 
-    public Subscription(OpcUaClient client, NodeId nodeId) {
+    public Subscription(OpcUaClient client, NodeId nodeId, boolean constant) {
         this.client = client;
         this.nodeId = nodeId;
+        this.constant = constant;
+        gson = new Gson();
     }
 
     public static void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
@@ -58,7 +64,9 @@ public class Subscription implements Runnable {
             String msg = String.format("Vibration Subscription value received: item=%s, value=%s",
                     item.getReadValueId().getNodeId(), value.getValue());
             LOGGER.log(Level.INFO, msg);
-            BatchHandler.getCurrentBatch().addToVibOverTime(value.getSourceTime(), (Float) value.getValue().getValue());
+            Float data = (Float) value.getValue().getValue();
+            BatchHandler.getCurrentBatch().addToVibOverTime(value.getSourceTime(), data);
+            HTTPHandler.getInstance().postData(gson.toJson(data), "test");
         } else {
             String msg = String.format("Subscription value received: item=%s, value=%s",
                     item.getReadValueId().getNodeId(), value.getValue());
@@ -104,7 +112,7 @@ public class Subscription implements Runnable {
                 LOGGER.log(Level.INFO, msg);
             }
         }
-        if (!MachineNodes.isInventoryNode(nodeId)) {
+        if (!MachineNodes.isInventoryNode(nodeId) && !constant) {
             SubscriptionHandler.addSubscription(subscription);
         }
     }
