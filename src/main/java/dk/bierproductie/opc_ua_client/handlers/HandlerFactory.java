@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutionException;
 public class HandlerFactory {
 
     private static HandlerFactory instance;
+    public static boolean onSimulator;
     public static OpcUaClient client;
 
     public HandlerFactory(boolean isSimulator) throws InterruptedException, ExecutionException {
@@ -35,6 +36,7 @@ public class HandlerFactory {
     public static HandlerFactory getInstance(boolean isSimulator) throws ExecutionException, InterruptedException {
         if (instance == null) {
             instance = new HandlerFactory(isSimulator);
+            onSimulator = isSimulator;
         }
         return instance;
     }
