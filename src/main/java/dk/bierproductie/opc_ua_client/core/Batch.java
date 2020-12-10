@@ -21,6 +21,7 @@ public class Batch {
     private final Map<Long, Float> vibOverTime;
     private final Map<String, Long> stateDurationTime;
     private float machineSpeed;
+    private final float maxMachineSpeed;
     private boolean running;
     private int amountProduced;
     private int defectiveProducts;
@@ -33,8 +34,9 @@ public class Batch {
     public Batch(int id, Products productType, float machineSpeed, float amountToProduce) {
         this.id = id;
         this.productType = productType.ordinal();
+        this.maxMachineSpeed = productType.speedLimit;
         try {
-            if (machineSpeed > 0 && machineSpeed <= productType.speedLimit) {
+            if (machineSpeed > 0 && machineSpeed <= maxMachineSpeed) {
                 this.machineSpeed = machineSpeed;
             } else {
                 throw new IncorrectMachineSpeedException(String.format("Incorrect speed. It needs to be 0 < speed <= %d for the specific recipe", productType.speedLimit));
@@ -146,7 +148,7 @@ public class Batch {
 
     public void setOee() {
         double plannedProductionTime = (this.amountToProduce / this.machineSpeed) * 60;
-        double idealCycleTime = plannedProductionTime / this.amountToProduce;
+        double idealCycleTime = (1/this.maxMachineSpeed) * 60;
 
         this.oee = ((this.acceptedProducts * idealCycleTime) / plannedProductionTime) * 100;
     }
