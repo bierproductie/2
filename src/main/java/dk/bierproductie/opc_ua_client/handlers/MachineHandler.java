@@ -8,12 +8,10 @@ import java.util.concurrent.ExecutionException;
 
 public class MachineHandler {
 
-    private OpcUaClient client;
     private DataCollector dataCollector;
     private CommandHandler commandHandler;
 
-    public MachineHandler(OpcUaClient client) {
-        this.client = client;
+    public MachineHandler() { ;
         this.dataCollector = DataCollector.getInstance();
         this.commandHandler = CommandHandler.getInstance();
     }

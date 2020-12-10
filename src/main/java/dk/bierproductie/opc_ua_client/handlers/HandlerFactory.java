@@ -24,11 +24,9 @@ public class HandlerFactory {
         SubscriptionHandler.setInstance(client);
         DataCollector.setInstance(client);
         DataWriter.setInstance(client);
-        if (isSimulator) {
-            MachineHandler machineHandler = new MachineHandler(client);
-            machineHandler.setUpSimulator();
-            Thread.sleep(1000);
-        }
+        MachineHandler machineHandler = new MachineHandler();
+        machineHandler.setUpSimulator();
+        Thread.sleep(1000);
         HTTPHandler.setInstance("localhost"); //todo get backend url from somewhere
         BatchHandler.setInstance();
     }
