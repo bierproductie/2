@@ -37,9 +37,9 @@ public final class SimulatorClient {
         }
     }
 
-    public static SimulatorClient getInstance() throws InterruptedException {
+    public static SimulatorClient getInstance(String url, String username, String password) throws InterruptedException {
         if (instance == null){
-            instance = new SimulatorClient("opc.tcp://127.0.0.1:4840","sdu","1234");
+            instance = new SimulatorClient(url,username,password);
         }
         return instance;
     }
