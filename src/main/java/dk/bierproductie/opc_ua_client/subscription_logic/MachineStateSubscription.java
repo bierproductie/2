@@ -32,6 +32,7 @@ public class MachineStateSubscription {
         if (stateInt == 17) {
             SubscriptionHandler.removeSubscriptions();
             BatchHandler.getCurrentBatch().setProductionTime(value.getSourceTime().getJavaTime());
+            LOGGER.log(Level.INFO,""+BatchHandler.getCurrentBatch().getProductionTime());
             BatchHandler.finishBatch();
             currentBatch.setRunning(false);
         }

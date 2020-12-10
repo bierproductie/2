@@ -158,7 +158,11 @@ public class Batch {
     }
 
     public void setProductionTime(long time){
-        productionTime =  time - getBatchStartTime();
+        this.productionTime =  time - getBatchStartTime();
+    }
+
+    public double getProductionTime() {
+        return productionTime;
     }
 
     @Override

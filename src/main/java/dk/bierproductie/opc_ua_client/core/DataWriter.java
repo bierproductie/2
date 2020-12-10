@@ -1,6 +1,5 @@
 package dk.bierproductie.opc_ua_client.core;
 
-import dk.bierproductie.opc_ua_client.clients.SimulatorClient;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;

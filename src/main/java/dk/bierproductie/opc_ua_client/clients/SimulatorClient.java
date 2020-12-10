@@ -20,7 +20,7 @@ public final class SimulatorClient {
 
     private OpcUaClient opcUaClient;
 
-    public SimulatorClient(String endpointURL, String username, String password) throws InterruptedException {
+    public SimulatorClient(String endpointURL, String username, String password) {
         try {
             List<EndpointDescription> endpoints = DiscoveryClient.getEndpoints(endpointURL).get();
             LOGGER.log(Level.INFO, "Connecting to Endpoint: {}", endpoints.get(0));

@@ -4,7 +4,6 @@ import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.config.OpcUaClientConfigBuilder;
 import org.eclipse.milo.opcua.stack.client.DiscoveryClient;
 import org.eclipse.milo.opcua.stack.core.UaException;
-import org.eclipse.milo.opcua.stack.core.types.structured.EndpointConfiguration;
 import org.eclipse.milo.opcua.stack.core.types.structured.EndpointDescription;
 import org.eclipse.milo.opcua.stack.core.util.EndpointUtil;
 
@@ -20,7 +19,7 @@ public final class MachineClient {
 
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-    public MachineClient(String url, int port) throws InterruptedException {
+    public MachineClient(String url, int port) {
         try {
             List<EndpointDescription> endpoints = DiscoveryClient.getEndpoints(url + ":" + port).get();
             LOGGER.log(Level.INFO, "Connecting to Endpoint: {}", endpoints.get(0));
