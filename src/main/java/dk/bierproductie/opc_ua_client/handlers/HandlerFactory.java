@@ -16,9 +16,9 @@ public class HandlerFactory {
 
     public HandlerFactory(boolean isSimulator) throws InterruptedException, ExecutionException {
         if (isSimulator) {
-            client = SimulatorClient.getInstance().getOpcUaClient();
+            client = SimulatorClient.getInstance().getOpcUaClient(); //todo get simulator url from .env file
         } else {
-            client = MachineClient.getInstance().getOpcUaClient();
+            client = MachineClient.getInstance().getOpcUaClient(); // get machine url and port from .env file
         }
         CommandHandler.setInstance(client);
         SubscriptionHandler.setInstance(client);
