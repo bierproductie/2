@@ -1,6 +1,5 @@
 package dk.bierproductie.opc_ua_client.core;
 
-import com.google.gson.Gson;
 import dk.bierproductie.opc_ua_client.enums.node_enums.AdminNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.MachineNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.StatusNodes;
@@ -24,7 +23,6 @@ import org.eclipse.milo.opcua.stack.core.types.structured.ReadValueId;
 
 import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
@@ -38,13 +36,11 @@ public class Subscription implements Runnable {
     private final OpcUaClient client;
     private final NodeId nodeId;
     private boolean constant;
-    private static Gson gson;
 
     public Subscription(OpcUaClient client, NodeId nodeId, boolean constant) {
         this.client = client;
         this.nodeId = nodeId;
         this.constant = constant;
-        gson = new Gson();
     }
 
     public static void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
