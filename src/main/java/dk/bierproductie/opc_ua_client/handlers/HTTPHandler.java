@@ -20,9 +20,13 @@ public class HTTPHandler {
     private static HTTPHandler instance;
     private HttpURLConnection connection;
 
-    public HTTPHandler(String urlString) {
+    public HTTPHandler() {
+        ConfigHandler configHandler = ConfigHandler.getInstance();
+
+        String apiUrl = configHandler.getApiUrl();
+
         try {
-            URL url = new URL(urlString);
+            URL url = new URL(apiUrl);
             connection = (HttpURLConnection) url.openConnection();
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "HTTPManger connection not established");
@@ -30,11 +34,10 @@ public class HTTPHandler {
     }
 
     public static HTTPHandler getInstance() {
+        if (instance == null) {
+            instance = new HTTPHandler();
+        }
         return instance;
-    }
-
-    public static void setInstance(String urlString) {
-        HTTPHandler.instance = new HTTPHandler(urlString);
     }
 
     public void postBatch() {
@@ -55,7 +58,7 @@ public class HTTPHandler {
         Date d = new Date(time);
         System.out.println(d);
         if (HandlerFactory.onSimulator && !isSimulating) {
-            simulateOutput(endpoint,time);
+            simulateOutput(endpoint, time);
         }
 //        String urls = connection.getURL().getHost() + endpoint;
 //        System.out.println(urls);
@@ -72,12 +75,12 @@ public class HTTPHandler {
 //        }
     }
 
-    public void simulateOutput(String endpoint, long time){
+    public void simulateOutput(String endpoint, long time) {
         Random r = new Random();
         Gson gson = new Gson();
         if (endpoint == "producedProducts") {
             float random = (float) (20 + r.nextFloat() * (20.5 - 20));
-            postData(gson.toJson(random),time,"temperature",true);
+            postData(gson.toJson(random), time, "temperature", true);
         }
     }
 
