@@ -22,7 +22,9 @@ import org.eclipse.milo.opcua.stack.core.types.structured.MonitoredItemCreateReq
 import org.eclipse.milo.opcua.stack.core.types.structured.MonitoringParameters;
 import org.eclipse.milo.opcua.stack.core.types.structured.ReadValueId;
 
+import java.time.Instant;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
@@ -73,23 +75,29 @@ public class Subscription implements Runnable {
     }
 
     public static void onConstantSubscriptionValue(UaMonitoredItem item, DataValue value) {
-        long time = value.getSourceTime().getJavaTime();
+        BatchData batchData = BatchHandler.getCurrentBatchData();
+        Instant time = value.getSourceTime().getJavaInstant();
+        batchData.setMsTime(time.toString());
         if (item.getReadValueId().getNodeId() == StatusNodes.MACHINE_STATE.nodeId) {
-            Float data = (Float) value.getValue().getValue();
-            HTTPHandler.getInstance().postData(gson.toJson(data), time, "machineState",false);
+            int data = (int) value.getValue().getValue();
+            batchData.setState(data);
         } else if (item.getReadValueId().getNodeId() == StatusNodes.TEMPERATURE.nodeId) {
             Float data = (Float) value.getValue().getValue();
-            HTTPHandler.getInstance().postData(gson.toJson(data), time, "temperature",false);
-        } else if (item.getReadValueId().getNodeId() == StatusNodes.HUMIDITY.nodeId) {
-            Float data = (Float) value.getValue().getValue();
-            HTTPHandler.getInstance().postData(gson.toJson(data), time, "humidity",false);
+            batchData.setTemperature(data);
         } else if (item.getReadValueId().getNodeId() == StatusNodes.VIBRATION.nodeId) {
             Float data = (Float) value.getValue().getValue();
-            HTTPHandler.getInstance().postData(gson.toJson(data), time, "vibration",false);
+            batchData.setVibration(data);
+        } else if (item.getReadValueId().getNodeId() == StatusNodes.HUMIDITY.nodeId) {
+            Float data = (Float) value.getValue().getValue();
+            batchData.setHumidity(data);
         } else if (item.getReadValueId().getNodeId() == AdminNodes.PRODUCED_PRODUCTS.nodeId) {
             int data = (int) value.getValue().getValue();
-            HTTPHandler.getInstance().postData(gson.toJson(data), time, "producedProducts",false);
+            batchData.setProduced(data);
+        } else if (item.getReadValueId().getNodeId() == AdminNodes.DEFECTIVE_PRODUCTS.nodeId) {
+            int data = (int) value.getValue().getValue();
+            batchData.setRejected(data);
         }
+        HTTPHandler.getInstance().postData();
     }
 
     public void subscribe() throws InterruptedException, ExecutionException {
