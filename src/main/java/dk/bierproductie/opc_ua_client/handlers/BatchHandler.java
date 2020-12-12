@@ -87,11 +87,11 @@ public final class BatchHandler {
     }
 
     public void setupConstantSubscriptions() {
-//        subscriptionHandler.subscribe(StatusNodes.TEMPERATURE.nodeId, true);
-//        subscriptionHandler.subscribe(StatusNodes.MACHINE_STATE.nodeId,true);
-//        subscriptionHandler.subscribe(StatusNodes.HUMIDITY.nodeId,true);
-//        subscriptionHandler.subscribe(StatusNodes.VIBRATION.nodeId,true);
-//        subscriptionHandler.subscribe(AdminNodes.DEFECTIVE_PRODUCTS.nodeId,true);
+        subscriptionHandler.subscribe(StatusNodes.TEMPERATURE.nodeId, true);
+        subscriptionHandler.subscribe(StatusNodes.MACHINE_STATE.nodeId,true);
+        subscriptionHandler.subscribe(StatusNodes.HUMIDITY.nodeId,true);
+        subscriptionHandler.subscribe(StatusNodes.VIBRATION.nodeId,true);
+        subscriptionHandler.subscribe(AdminNodes.DEFECTIVE_PRODUCTS.nodeId,true);
         subscriptionHandler.subscribe(AdminNodes.PRODUCED_PRODUCTS.nodeId,true);
     }
 
