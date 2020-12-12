@@ -32,7 +32,6 @@ public class HTTPHandler {
         BatchData batchData = BatchHandler.getCurrentBatchData();
         OkHttpClient client = new OkHttpClient();
         String json = batchData.toJson();
-        System.out.println(json);
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .url(apiUrl)
@@ -40,7 +39,8 @@ public class HTTPHandler {
                 .build();
         try {
             Response response = client.newCall(request).execute();
-            LOGGER.log(Level.INFO,response.body().toString());
+            String responseMsg = response.body().string();
+            LOGGER.log(Level.INFO,responseMsg);
         } catch (IOException e) {
             e.printStackTrace();
         }
