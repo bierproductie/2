@@ -20,7 +20,7 @@ public final class SimulatorClient {
 
     private OpcUaClient opcUaClient;
 
-    public SimulatorClient(String endpointURL, String username, String password) throws InterruptedException {
+    public SimulatorClient(String endpointURL, String username, String password) {
         try {
             List<EndpointDescription> endpoints = DiscoveryClient.getEndpoints(endpointURL).get();
             LOGGER.log(Level.INFO, "Connecting to Endpoint: {}", endpoints.get(0));
@@ -37,9 +37,9 @@ public final class SimulatorClient {
         }
     }
 
-    public static SimulatorClient getInstance() throws InterruptedException {
+    public static SimulatorClient getInstance(String url, String username, String password) throws InterruptedException {
         if (instance == null){
-            instance = new SimulatorClient("opc.tcp://127.0.0.1:4840","sdu","1234");
+            instance = new SimulatorClient(url,username,password);
         }
         return instance;
     }

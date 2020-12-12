@@ -16,23 +16,20 @@ public class Batch {
     private final float id;
     private final float productType;
     private final float amountToProduce;
-    private final Map<DateTime, Float> tempOverTime;
-    private final Map<DateTime, Float> humOverTime;
-    private final Map<DateTime, Float> vibOverTime;
+    private final Map<Long, Float> tempOverTime;
+    private final Map<Long, Float> humOverTime;
+    private final Map<Long, Float> vibOverTime;
     private final Map<String, Long> stateDurationTime;
     private float machineSpeed;
     private final float maxMachineSpeed;
     private boolean running;
     private int amountProduced;
-    //private errorFunction ErrorFunction
     private int defectiveProducts;
     private int acceptedProducts;
     private long stateStartTime;
     private long batchStartTime;
-    //private double productionTime;
+    private double productionTime;
     private double oee;
-    //private errorFunction ErrorFunction
-    //private int totalProductAmount
 
     public Batch(int id, Products productType, float machineSpeed, float amountToProduce) {
         this.id = id;
@@ -79,26 +76,26 @@ public class Batch {
     }
 
     public void addToTempOverTime(DateTime dateTime, Float value) {
-        tempOverTime.put(dateTime, value);
+        tempOverTime.put(dateTime.getJavaTime(), value);
     }
 
-    public Map<DateTime, Float> getTempOverTime() {
+    public Map<Long, Float> getTempOverTime() {
         return tempOverTime;
     }
 
     public void addToHumOverTime(DateTime dateTime, Float value) {
-        humOverTime.put(dateTime, value);
+        humOverTime.put(dateTime.getJavaTime(), value);
     }
 
-    public Map<DateTime, Float> getHumOverTime() {
+    public Map<Long, Float> getHumOverTime() {
         return humOverTime;
     }
 
     public void addToVibOverTime(DateTime dateTime, Float value) {
-        vibOverTime.put(dateTime, value);
+        vibOverTime.put(dateTime.getJavaTime(), value);
     }
 
-    public Map<DateTime, Float> getVibOverTime() {
+    public Map<Long, Float> getVibOverTime() {
         return vibOverTime;
     }
 
@@ -158,6 +155,14 @@ public class Batch {
 
     public double getOee() {
         return oee;
+    }
+
+    public void setProductionTime(long time){
+        this.productionTime =  time - getBatchStartTime();
+    }
+
+    public double getProductionTime() {
+        return productionTime;
     }
 
     @Override

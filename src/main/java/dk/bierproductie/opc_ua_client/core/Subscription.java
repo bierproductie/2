@@ -1,9 +1,11 @@
 package dk.bierproductie.opc_ua_client.core;
 
-import dk.bierproductie.opc_ua_client.enums.MachineState;
+import com.google.gson.Gson;
+import dk.bierproductie.opc_ua_client.enums.node_enums.AdminNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.MachineNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.StatusNodes;
 import dk.bierproductie.opc_ua_client.handlers.BatchHandler;
+import dk.bierproductie.opc_ua_client.handlers.HTTPHandler;
 import dk.bierproductie.opc_ua_client.handlers.SubscriptionHandler;
 import dk.bierproductie.opc_ua_client.subscription_logic.MachineStateSubscription;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
@@ -22,7 +24,6 @@ import org.eclipse.milo.opcua.stack.core.types.structured.ReadValueId;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
@@ -34,10 +35,14 @@ public class Subscription implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private final OpcUaClient client;
     private final NodeId nodeId;
+    private boolean constant;
+    private static Gson gson;
 
-    public Subscription(OpcUaClient client, NodeId nodeId) {
+    public Subscription(OpcUaClient client, NodeId nodeId, boolean constant) {
         this.client = client;
         this.nodeId = nodeId;
+        this.constant = constant;
+        gson = new Gson();
     }
 
     public static void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
@@ -47,8 +52,8 @@ public class Subscription implements Runnable {
             String msg = String.format("Temperature Subscription value received: item=%s, value=%s",
                     item.getReadValueId().getNodeId(), value.getValue());
             LOGGER.log(Level.INFO, msg);
-            BatchHandler.getCurrentBatch().addToTempOverTime(value.getSourceTime(), (Float) value.getValue().getValue());
-
+            Float data = (Float) value.getValue().getValue();
+            BatchHandler.getCurrentBatch().addToTempOverTime(value.getSourceTime(), data);
         } else if (item.getReadValueId().getNodeId() == StatusNodes.HUMIDITY.nodeId) {
             String msg = String.format("Humidity Subscription value received: item=%s, value=%s",
                     item.getReadValueId().getNodeId(), value.getValue());
@@ -58,11 +63,32 @@ public class Subscription implements Runnable {
             String msg = String.format("Vibration Subscription value received: item=%s, value=%s",
                     item.getReadValueId().getNodeId(), value.getValue());
             LOGGER.log(Level.INFO, msg);
-            BatchHandler.getCurrentBatch().addToVibOverTime(value.getSourceTime(), (Float) value.getValue().getValue());
+            Float data = (Float) value.getValue().getValue();
+            BatchHandler.getCurrentBatch().addToVibOverTime(value.getSourceTime(), data);
         } else {
             String msg = String.format("Subscription value received: item=%s, value=%s",
                     item.getReadValueId().getNodeId(), value.getValue());
             LOGGER.log(Level.INFO, msg);
+        }
+    }
+
+    public static void onConstantSubscriptionValue(UaMonitoredItem item, DataValue value) {
+        long time = value.getSourceTime().getJavaTime();
+        if (item.getReadValueId().getNodeId() == StatusNodes.MACHINE_STATE.nodeId) {
+            Float data = (Float) value.getValue().getValue();
+            HTTPHandler.getInstance().postData(gson.toJson(data), time, "machineState",false);
+        } else if (item.getReadValueId().getNodeId() == StatusNodes.TEMPERATURE.nodeId) {
+            Float data = (Float) value.getValue().getValue();
+            HTTPHandler.getInstance().postData(gson.toJson(data), time, "temperature",false);
+        } else if (item.getReadValueId().getNodeId() == StatusNodes.HUMIDITY.nodeId) {
+            Float data = (Float) value.getValue().getValue();
+            HTTPHandler.getInstance().postData(gson.toJson(data), time, "humidity",false);
+        } else if (item.getReadValueId().getNodeId() == StatusNodes.VIBRATION.nodeId) {
+            Float data = (Float) value.getValue().getValue();
+            HTTPHandler.getInstance().postData(gson.toJson(data), time, "vibration",false);
+        } else if (item.getReadValueId().getNodeId() == AdminNodes.PRODUCED_PRODUCTS.nodeId) {
+            int data = (int) value.getValue().getValue();
+            HTTPHandler.getInstance().postData(gson.toJson(data), time, "producedProducts",false);
         }
     }
 
@@ -84,7 +110,15 @@ public class Subscription implements Runnable {
         MonitoredItemCreateRequest request = new MonitoredItemCreateRequest(readValueId, MonitoringMode.Reporting, parameters);
 
         // setting the consumer after the subscription creation
-        BiConsumer<UaMonitoredItem, Integer> onItemCreated = (item, id) -> item.setValueConsumer(Subscription::onSubscriptionValue);
+        BiConsumer<UaMonitoredItem, Integer> onItemCreated;
+
+        if (!constant){
+            // setting the consumer after the subscription creation
+            onItemCreated = (item, id) -> item.setValueConsumer(Subscription::onSubscriptionValue);
+        } else {
+            // setting the consumer after the subscription creation
+            onItemCreated = (item, id) -> item.setValueConsumer(Subscription::onConstantSubscriptionValue);
+        }
 
         // create a subscription @ 1000ms
         UaSubscription subscription = client.getSubscriptionManager().createSubscription(1000.0).get();
@@ -104,7 +138,7 @@ public class Subscription implements Runnable {
                 LOGGER.log(Level.INFO, msg);
             }
         }
-        if (!MachineNodes.isInventoryNode(nodeId)) {
+        if (!MachineNodes.isInventoryNode(nodeId) && !constant) {
             SubscriptionHandler.addSubscription(subscription);
         }
     }

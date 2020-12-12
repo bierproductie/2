@@ -10,7 +10,6 @@ public class CLIFormatter extends Formatter {
 
     @Override
     public String format(LogRecord record) {
-        String message = "{" + record.getLevel() + "} " + formatMessage(record) + ANSI_WHITE +  " \n";
-        return message;
+        return String.format("{%s} %s%s \n", record.getLevel(), formatMessage(record), ANSI_WHITE);
     }
 }

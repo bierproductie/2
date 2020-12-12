@@ -34,8 +34,8 @@ public class SubscriptionHandler {
         }
     }
 
-    public void subscribe(NodeId nodeId) {
-        Thread subscriptionThread = new Thread(new Subscription(client, nodeId));
+    public void subscribe(NodeId nodeId, boolean constant) {
+        Thread subscriptionThread = new Thread(new Subscription(client, nodeId, constant));
         subscriptionThread.start();
     }
 }

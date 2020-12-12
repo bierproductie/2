@@ -2,18 +2,15 @@ package dk.bierproductie.opc_ua_client.handlers;
 
 import dk.bierproductie.opc_ua_client.core.DataCollector;
 import dk.bierproductie.opc_ua_client.enums.Commands;
-import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 
 import java.util.concurrent.ExecutionException;
 
 public class MachineHandler {
 
-    private OpcUaClient client;
     private DataCollector dataCollector;
     private CommandHandler commandHandler;
 
-    public MachineHandler(OpcUaClient client) {
-        this.client = client;
+    public MachineHandler() {
         this.dataCollector = DataCollector.getInstance();
         this.commandHandler = CommandHandler.getInstance();
     }
