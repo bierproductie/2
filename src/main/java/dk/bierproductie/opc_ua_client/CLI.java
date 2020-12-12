@@ -59,7 +59,6 @@ public class CLI {
                         Thread.sleep(1000);
                     }
                     LOGGER.log(Level.INFO, "Batch finished...");
-                    HTTPHandler.getInstance().postBatch();
                     LOGGER.log(Level.INFO, BatchHandler.getCurrentBatch().toString());
                     LOGGER.log(Level.INFO, "Run another? [Y/n]");
                     run = scanner.nextLine();
