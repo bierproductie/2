@@ -53,6 +53,38 @@ public class BatchData {
         this.rejected = rejected;
     }
 
+    public int getBatchId() {
+        return batchId;
+    }
+
+    public String getMsTime() {
+        return msTime;
+    }
+
+    public float getTemperature() {
+        return temperature;
+    }
+
+    public float getHumidity() {
+        return humidity;
+    }
+
+    public float getVibration() {
+        return vibration;
+    }
+
+    public float getProduced() {
+        return produced;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public int getRejected() {
+        return rejected;
+    }
+
     public String toJson() {
         Gson gson = new Gson();
         return gson.toJson(this);
