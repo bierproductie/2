@@ -20,19 +20,23 @@ public class RunOpcUaClient {
         LOGGER.log(Level.WARNING, "Application stopped...");
         HandlerFactory.getInstance(true);
         BatchHandler batchHandler = BatchHandler.getInstance();
-        Batch batch = new Batch(3, Products.PILSNER, 600, 300);
-        Batch batch1 = new Batch(4, Products.WHEAT, 300, 150);
-        Batch batch2 = new Batch(53, Products.ALE, 100, 50);
-        ArrayList<Batch> batches = new ArrayList<>();
-        batches.add(batch);
-        batches.add(batch1);
-        batches.add(batch2);
-        for (Batch bth : batches){
-            batchHandler.startBatch(bth);
-            while (BatchHandler.getCurrentBatch().isRunning()) {
-                Thread.sleep(1000);
-            }
-            System.out.println("finished batch" + bth.getId());
+        Batch batch = new Batch(1, Products.ALE, 100, 50);
+        batchHandler.startBatch(batch);
+        while (BatchHandler.getCurrentBatch().isRunning()) {
+            Thread.sleep(1000);
         }
+//        Batch batch1 = new Batch(4, Products.WHEAT, 300, 150);
+//        Batch batch2 = new Batch(53, Products.ALE, 100, 50);
+//        ArrayList<Batch> batches = new ArrayList<>();
+//        batches.add(batch);
+//        batches.add(batch1);
+//        batches.add(batch2);
+//        for (Batch bth : batches){
+//            batchHandler.startBatch(bth);
+//            while (BatchHandler.getCurrentBatch().isRunning()) {
+//                Thread.sleep(1000);
+//            }
+//            System.out.println("finished batch" + bth.getId());
+//        }
     }
 }
