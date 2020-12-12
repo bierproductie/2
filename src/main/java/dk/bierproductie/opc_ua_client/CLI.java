@@ -3,7 +3,6 @@ package dk.bierproductie.opc_ua_client;
 import dk.bierproductie.opc_ua_client.core.Batch;
 import dk.bierproductie.opc_ua_client.enums.Products;
 import dk.bierproductie.opc_ua_client.handlers.BatchHandler;
-import dk.bierproductie.opc_ua_client.handlers.HTTPHandler;
 import dk.bierproductie.opc_ua_client.handlers.HandlerFactory;
 
 import java.util.Scanner;
