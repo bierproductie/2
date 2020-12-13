@@ -126,4 +126,11 @@ class BatchTest {
         Batch result = gson.fromJson(testJson,Batch.class);
         assertEquals(batch.getId(),result.getId());
     }
+
+    @Test
+    void setProductionTime() {
+        DateTime dateTime = new DateTime();
+        batch.setProductionTime(dateTime.getJavaTime());
+        assertEquals(dateTime.getJavaTime(),batch.getProductionTime());
+    }
 }
