@@ -11,7 +11,7 @@ public class HTTPServer {
         try{
             HttpServer server = HttpServer.create(new InetSocketAddress("localhost", 8001), 0);
             server.createContext("/batch", new HTTPHandler());
-            //HandlerFactory.getInstance(true);
+            HandlerFactory.getInstance(true);
             server.start();
             System.out.println("Server Started");
         } catch(Exception e){
