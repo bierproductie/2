@@ -1,6 +1,7 @@
 package dk.bierproductie.opc_ua_client.handlers;
 
 import dk.bierproductie.opc_ua_client.core.Batch;
+import dk.bierproductie.opc_ua_client.core.BatchData;
 import dk.bierproductie.opc_ua_client.core.DataCollector;
 import dk.bierproductie.opc_ua_client.core.DataWriter;
 import dk.bierproductie.opc_ua_client.enums.Commands;
@@ -17,6 +18,7 @@ public final class BatchHandler {
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private static BatchHandler instance;
     private static Batch currentBatch;
+    private static BatchData currentBatchData;
     private final CommandHandler commandHandler;
     private final DataWriter dataWriter;
     private final SubscriptionHandler subscriptionHandler;
@@ -43,6 +45,10 @@ public final class BatchHandler {
         return currentBatch;
     }
 
+    public static BatchData getCurrentBatchData() {
+        return currentBatchData;
+    }
+
     public static void setCurrentBatch(Batch currentBatch) {
         BatchHandler.currentBatch = currentBatch;
     }
@@ -59,6 +65,7 @@ public final class BatchHandler {
         if (batch.isRunning() || dataCollector.readMachineState(false) != 4 && dataCollector.readMachineState(false) != 17) {
             LOGGER.log(Level.WARNING, "Another batch is already running");
         } else {
+            currentBatchData = new BatchData((int) batch.getId());
             commandHandler.setCommand(Commands.RESET);
             Thread.sleep(1000);
             setCurrentBatch(batch);
@@ -80,11 +87,11 @@ public final class BatchHandler {
     }
 
     public void setupConstantSubscriptions() {
-//        subscriptionHandler.subscribe(StatusNodes.TEMPERATURE.nodeId, true);
-//        subscriptionHandler.subscribe(StatusNodes.MACHINE_STATE.nodeId,true);
-//        subscriptionHandler.subscribe(StatusNodes.HUMIDITY.nodeId,true);
-//        subscriptionHandler.subscribe(StatusNodes.VIBRATION.nodeId,true);
-//        subscriptionHandler.subscribe(AdminNodes.DEFECTIVE_PRODUCTS.nodeId,true);
+        subscriptionHandler.subscribe(StatusNodes.TEMPERATURE.nodeId, true);
+        subscriptionHandler.subscribe(StatusNodes.MACHINE_STATE.nodeId,true);
+        subscriptionHandler.subscribe(StatusNodes.HUMIDITY.nodeId,true);
+        subscriptionHandler.subscribe(StatusNodes.VIBRATION.nodeId,true);
+        subscriptionHandler.subscribe(AdminNodes.DEFECTIVE_PRODUCTS.nodeId,true);
         subscriptionHandler.subscribe(AdminNodes.PRODUCED_PRODUCTS.nodeId,true);
     }
 

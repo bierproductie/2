@@ -1,5 +1,6 @@
 package dk.bierproductie.opc_ua_client.clients;
 
+import dk.bierproductie.opc_ua_client.handlers.ConfigHandler;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.config.OpcUaClientConfigBuilder;
 import org.eclipse.milo.opcua.stack.client.DiscoveryClient;
@@ -14,12 +15,16 @@ import java.util.logging.Logger;
 
 public final class MachineClient {
 
+    private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private static MachineClient instance;
     private OpcUaClient opcUaClient;
 
-    private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    public MachineClient() {
+        ConfigHandler configHandler = ConfigHandler.getInstance();
 
-    public MachineClient(String url, int port) {
+        String url = configHandler.getMachineUrl();
+        int port = Integer.parseInt(configHandler.getMachinePort());
+
         try {
             List<EndpointDescription> endpoints = DiscoveryClient.getEndpoints(url + ":" + port).get();
             LOGGER.log(Level.INFO, "Connecting to Endpoint: {}", endpoints.get(0));
@@ -37,9 +42,9 @@ public final class MachineClient {
         }
     }
 
-    public static MachineClient getInstance(String url, int port) throws InterruptedException {
+    public static MachineClient getInstance() {
         if (instance == null) {
-            instance = new MachineClient(url, port);
+            instance = new MachineClient();
         }
         return instance;
     }

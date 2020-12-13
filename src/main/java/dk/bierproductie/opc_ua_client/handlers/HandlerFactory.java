@@ -10,15 +10,17 @@ import java.util.concurrent.ExecutionException;
 
 public class HandlerFactory {
 
-    private static HandlerFactory instance;
     public static boolean onSimulator;
     public static OpcUaClient client;
+    private static HandlerFactory instance;
 
     public HandlerFactory(boolean isSimulator) throws InterruptedException, ExecutionException {
+        ConfigHandler.getInstance();
+
         if (isSimulator) {
-            client = SimulatorClient.getInstance().getOpcUaClient(); //todo get simulator url from .env file
+            client = SimulatorClient.getInstance().getOpcUaClient();
         } else {
-            client = MachineClient.getInstance().getOpcUaClient(); // get machine url and port from .env file
+            client = MachineClient.getInstance().getOpcUaClient();
         }
         CommandHandler.setInstance(client);
         SubscriptionHandler.setInstance(client);
@@ -27,7 +29,7 @@ public class HandlerFactory {
         MachineHandler machineHandler = new MachineHandler();
         machineHandler.setUpSimulator();
         Thread.sleep(1000);
-        HTTPHandler.setInstance("localhost"); //todo get backend url from somewhere
+        HTTPHandler.getInstance();
         BatchHandler.setInstance();
     }
 
@@ -38,5 +40,4 @@ public class HandlerFactory {
         }
         return instance;
     }
-
 }

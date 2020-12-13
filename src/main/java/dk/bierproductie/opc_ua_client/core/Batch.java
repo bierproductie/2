@@ -158,7 +158,7 @@ public class Batch {
     }
 
     public void setProductionTime(long time){
-        this.productionTime =  time - getBatchStartTime();
+        this.productionTime =  time - (double)getBatchStartTime();
     }
 
     public double getProductionTime() {
