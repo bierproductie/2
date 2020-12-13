@@ -4,7 +4,7 @@ import dk.bierproductie.opc_ua_client.enums.node_enums.AdminNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.MachineNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.StatusNodes;
 import dk.bierproductie.opc_ua_client.handlers.BatchHandler;
-import dk.bierproductie.opc_ua_client.handlers.HTTPHandler;
+import dk.bierproductie.opc_ua_client.handlers.HTTPPostHandler;
 import dk.bierproductie.opc_ua_client.handlers.SubscriptionHandler;
 import dk.bierproductie.opc_ua_client.subscription_logic.MachineStateSubscription;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
@@ -93,7 +93,7 @@ public class Subscription implements Runnable {
             int data = (int) value.getValue().getValue();
             batchData.setRejected(data);
         }
-        HTTPHandler.getInstance().postData();
+        HTTPPostHandler.getInstance().postData();
     }
 
     public void subscribe() throws InterruptedException, ExecutionException {

@@ -29,7 +29,7 @@ public class HandlerFactory {
         MachineHandler machineHandler = new MachineHandler();
         machineHandler.setUpSimulator();
         Thread.sleep(1000);
-        HTTPHandler.getInstance();
+        HTTPPostHandler.getInstance();
         BatchHandler.setInstance();
     }
 

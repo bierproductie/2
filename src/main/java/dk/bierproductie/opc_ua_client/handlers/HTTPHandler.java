@@ -1,48 +1,53 @@
 package dk.bierproductie.opc_ua_client.handlers;
-
-import com.squareup.okhttp.*;
-import dk.bierproductie.opc_ua_client.core.BatchData;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import dk.bierproductie.opc_ua_client.core.Batch;
+import dk.bierproductie.opc_ua_client.enums.Products;
+import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.InputStream;
+import java.util.concurrent.ExecutionException;
 
-public class HTTPHandler {
-
-    private static final MediaType JSON = MediaType.parse("application/json");
-    private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-
-    private static HTTPHandler instance;
-    private String apiUrl;
-
-    public HTTPHandler() {
-        ConfigHandler configHandler = ConfigHandler.getInstance();
-        apiUrl = configHandler.getApiUrl();
-    }
-
-    public static HTTPHandler getInstance() {
-        if (instance == null) {
-            instance = new HTTPHandler();
+public class HTTPHandler implements HttpHandler {
+    @Override
+    public void handle(HttpExchange exchange) throws IOException {
+        //Check type of request
+        if(exchange.getRequestMethod().equals("POST")){
+            handlePostRequest(exchange);
+        } else {
+            System.err.println("Error");
         }
-        return instance;
     }
 
+    private void handlePostRequest(HttpExchange e) throws IOException {
+        //Get request body
+        StringBuilder sb = new StringBuilder();
+        InputStream is = e.getRequestBody();
 
-    public void postData() {
-        BatchData batchData = BatchHandler.getCurrentBatchData();
-        OkHttpClient client = new OkHttpClient();
-        String json = batchData.toJson();
-        RequestBody body = RequestBody.create(JSON, json);
-        Request request = new Request.Builder()
-                .url(apiUrl)
-                .post(body)
-                .build();
+        //Create json string
+        int i;
+        while((i = is.read()) != -1){
+            sb.append((char) i);
+        }
+
+        System.out.println(sb.toString());
+
+        //Create Json object
+        JSONObject json = new JSONObject(sb.toString());
+
+        int id = json.getInt("id");
+        Products type = Products.values()[json.getInt("recipe")];
+        float speed = json.getFloat("speed");
+        float amt = json.getFloat("amount_to_produce");
+
+        //Create new Batch object
+        Batch b = new Batch(id, type, speed, amt);
+
         try {
-            Response response = client.newCall(request).execute();
-            String responseMsg = response.body().string();
-            LOGGER.log(Level.INFO,responseMsg);
-        } catch (IOException e) {
-            e.printStackTrace();
+            BatchHandler.getInstance().startBatch(b);
+        } catch (ExecutionException | InterruptedException executionException) {
+            executionException.printStackTrace();
         }
     }
 }
