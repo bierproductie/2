@@ -30,7 +30,7 @@ class BatchTest {
         DateTime dateTime = new DateTime();
         Float testFloat = 12f;
         batch.addToTempOverTime(dateTime, testFloat);
-        assertEquals(testFloat, batch.getTempOverTime().get(dateTime));
+        assertEquals(testFloat, batch.getTempOverTime().get(dateTime.getJavaTime()));
     }
 
     @Test
@@ -38,7 +38,7 @@ class BatchTest {
         DateTime dateTime = new DateTime();
         Float testFloat = 12f;
         batch.addToHumOverTime(dateTime, testFloat);
-        assertEquals(testFloat, batch.getHumOverTime().get(dateTime));
+        assertEquals(testFloat, batch.getHumOverTime().get(dateTime.getJavaTime()));
     }
 
     @Test
@@ -46,7 +46,7 @@ class BatchTest {
         DateTime dateTime = new DateTime();
         Float testFloat = 12f;
         batch.addToVibOverTime(dateTime, testFloat);
-        assertEquals(testFloat, batch.getVibOverTime().get(dateTime));
+        assertEquals(testFloat, batch.getVibOverTime().get(dateTime.getJavaTime()));
     }
 
     @Test
