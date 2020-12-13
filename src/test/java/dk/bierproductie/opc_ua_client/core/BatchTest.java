@@ -26,30 +26,6 @@ class BatchTest {
     }
 
     @Test
-    void addToTempOverTime() {
-        DateTime dateTime = new DateTime();
-        Float testFloat = 12f;
-        batch.addToTempOverTime(dateTime, testFloat);
-        assertEquals(testFloat, batch.getTempOverTime().get(dateTime.getJavaTime()));
-    }
-
-    @Test
-    void addToHumOverTime() {
-        DateTime dateTime = new DateTime();
-        Float testFloat = 12f;
-        batch.addToHumOverTime(dateTime, testFloat);
-        assertEquals(testFloat, batch.getHumOverTime().get(dateTime.getJavaTime()));
-    }
-
-    @Test
-    void addToVibOverTime() {
-        DateTime dateTime = new DateTime();
-        Float testFloat = 12f;
-        batch.addToVibOverTime(dateTime, testFloat);
-        assertEquals(testFloat, batch.getVibOverTime().get(dateTime.getJavaTime()));
-    }
-
-    @Test
     void getId() {
         assertEquals(1, batch.getId());
     }
@@ -110,13 +86,6 @@ class BatchTest {
         long dateTime = new DateTime().getJavaTime();
         batch.setStateStartTime(dateTime);
         assertEquals(dateTime,batch.getStateStartTime());
-    }
-
-    @Test
-    void stateChangeTimeTest() {
-        long dateTime = new DateTime().getJavaTime();
-        batch.addStateChangeDuration(dateTime,"testState");
-        assertEquals(dateTime,batch.getStateDurationTime().get("testState"));
     }
 
     @Test

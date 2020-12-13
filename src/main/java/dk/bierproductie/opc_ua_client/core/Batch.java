@@ -16,10 +16,6 @@ public class Batch {
     private final float id;
     private final float productType;
     private final float amountToProduce;
-    private final Map<Long, Float> tempOverTime;
-    private final Map<Long, Float> humOverTime;
-    private final Map<Long, Float> vibOverTime;
-    private final Map<String, Long> stateDurationTime;
     private float machineSpeed;
     private final float maxMachineSpeed;
     private boolean running;
@@ -45,10 +41,6 @@ public class Batch {
             LOGGER.log(Level.WARNING, String.valueOf(e));
         }
         this.amountToProduce = amountToProduce;
-        tempOverTime = new HashMap<>();
-        humOverTime = new HashMap<>();
-        vibOverTime = new HashMap<>();
-        stateDurationTime = new HashMap<>();
     }
 
     public float getId() {
@@ -73,30 +65,6 @@ public class Batch {
 
     public void setAmountProduced(int amountProduced) {
         this.amountProduced = amountProduced;
-    }
-
-    public void addToTempOverTime(DateTime dateTime, Float value) {
-        tempOverTime.put(dateTime.getJavaTime(), value);
-    }
-
-    public Map<Long, Float> getTempOverTime() {
-        return tempOverTime;
-    }
-
-    public void addToHumOverTime(DateTime dateTime, Float value) {
-        humOverTime.put(dateTime.getJavaTime(), value);
-    }
-
-    public Map<Long, Float> getHumOverTime() {
-        return humOverTime;
-    }
-
-    public void addToVibOverTime(DateTime dateTime, Float value) {
-        vibOverTime.put(dateTime.getJavaTime(), value);
-    }
-
-    public Map<Long, Float> getVibOverTime() {
-        return vibOverTime;
     }
 
     public boolean isRunning() {
@@ -138,14 +106,6 @@ public class Batch {
         }
     }
 
-    public void addStateChangeDuration(long time, String state){
-        stateDurationTime.put(state,time);
-    }
-
-    public Map<String, Long> getStateDurationTime() {
-        return stateDurationTime;
-    }
-
     public void setOee() {
         double plannedProductionTime = (this.amountToProduce / this.machineSpeed) * 60;
         double idealCycleTime = (1/this.maxMachineSpeed) * 60;
@@ -171,14 +131,15 @@ public class Batch {
                 "id=" + id +
                 ", productType=" + productType +
                 ", amountToProduce=" + amountToProduce +
-                ", stateDurationTime=" + stateDurationTime +
                 ", machineSpeed=" + machineSpeed +
+                ", maxMachineSpeed=" + maxMachineSpeed +
                 ", running=" + running +
                 ", amountProduced=" + amountProduced +
                 ", defectiveProducts=" + defectiveProducts +
                 ", acceptedProducts=" + acceptedProducts +
                 ", stateStartTime=" + stateStartTime +
                 ", batchStartTime=" + batchStartTime +
+                ", productionTime=" + productionTime +
                 ", oee=" + oee +
                 '}';
     }
