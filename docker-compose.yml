@@ -1,0 +1,10 @@
+version: "3.7"
+
+services: 
+  opc_ua_client:
+    container_name: bierproductie_opc_ua_client
+    build: 
+      context: .
+      dockerfile: docker/Dockerfile
+    env_file:
+      - .env
