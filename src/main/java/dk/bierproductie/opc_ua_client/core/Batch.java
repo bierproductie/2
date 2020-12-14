@@ -2,10 +2,7 @@ package dk.bierproductie.opc_ua_client.core;
 
 import com.google.gson.Gson;
 import dk.bierproductie.opc_ua_client.enums.Products;
-import org.eclipse.milo.opcua.stack.core.types.builtin.DateTime;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,10 +13,6 @@ public class Batch {
     private final float id;
     private final float productType;
     private final float amountToProduce;
-    private final Map<Long, Float> tempOverTime;
-    private final Map<Long, Float> humOverTime;
-    private final Map<Long, Float> vibOverTime;
-    private final Map<String, Long> stateDurationTime;
     private float machineSpeed;
     private final float maxMachineSpeed;
     private boolean running;
@@ -39,16 +32,13 @@ public class Batch {
             if (machineSpeed > 0 && machineSpeed <= maxMachineSpeed) {
                 this.machineSpeed = machineSpeed;
             } else {
+                this.machineSpeed = productType.speedLimit;
                 throw new IncorrectMachineSpeedException(String.format("Incorrect speed. It needs to be 0 < speed <= %d for the specific recipe", productType.speedLimit));
             }
         } catch (IncorrectMachineSpeedException e) {
             LOGGER.log(Level.WARNING, String.valueOf(e));
         }
         this.amountToProduce = amountToProduce;
-        tempOverTime = new HashMap<>();
-        humOverTime = new HashMap<>();
-        vibOverTime = new HashMap<>();
-        stateDurationTime = new HashMap<>();
     }
 
     public float getId() {
@@ -73,30 +63,6 @@ public class Batch {
 
     public void setAmountProduced(int amountProduced) {
         this.amountProduced = amountProduced;
-    }
-
-    public void addToTempOverTime(DateTime dateTime, Float value) {
-        tempOverTime.put(dateTime.getJavaTime(), value);
-    }
-
-    public Map<Long, Float> getTempOverTime() {
-        return tempOverTime;
-    }
-
-    public void addToHumOverTime(DateTime dateTime, Float value) {
-        humOverTime.put(dateTime.getJavaTime(), value);
-    }
-
-    public Map<Long, Float> getHumOverTime() {
-        return humOverTime;
-    }
-
-    public void addToVibOverTime(DateTime dateTime, Float value) {
-        vibOverTime.put(dateTime.getJavaTime(), value);
-    }
-
-    public Map<Long, Float> getVibOverTime() {
-        return vibOverTime;
     }
 
     public boolean isRunning() {
@@ -138,14 +104,6 @@ public class Batch {
         }
     }
 
-    public void addStateChangeDuration(long time, String state){
-        stateDurationTime.put(state,time);
-    }
-
-    public Map<String, Long> getStateDurationTime() {
-        return stateDurationTime;
-    }
-
     public void setOee() {
         double plannedProductionTime = (this.amountToProduce / this.machineSpeed) * 60;
         double idealCycleTime = (1/this.maxMachineSpeed) * 60;
@@ -171,14 +129,15 @@ public class Batch {
                 "id=" + id +
                 ", productType=" + productType +
                 ", amountToProduce=" + amountToProduce +
-                ", stateDurationTime=" + stateDurationTime +
                 ", machineSpeed=" + machineSpeed +
+                ", maxMachineSpeed=" + maxMachineSpeed +
                 ", running=" + running +
                 ", amountProduced=" + amountProduced +
                 ", defectiveProducts=" + defectiveProducts +
                 ", acceptedProducts=" + acceptedProducts +
                 ", stateStartTime=" + stateStartTime +
                 ", batchStartTime=" + batchStartTime +
+                ", productionTime=" + productionTime +
                 ", oee=" + oee +
                 '}';
     }

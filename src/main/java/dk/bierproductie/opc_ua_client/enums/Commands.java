@@ -14,4 +14,14 @@ public enum Commands {
     Commands(String output) {
         this.output = output;
     }
+
+    public static Commands getCommand(String cmd) {
+        for (Commands command : Commands.values()){
+            String output = command.output;
+            if (output.equalsIgnoreCase(cmd)) {
+                return command;
+            }
+        }
+        return Commands.values()[0];
+    }
 }

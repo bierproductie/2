@@ -8,15 +8,19 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HTTPHandler implements HttpHandler {
+
+    private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         //Check type of request
         if(exchange.getRequestMethod().equals("POST")){
             handlePostRequest(exchange);
         } else {
-            System.err.println("Error");
+            LOGGER.log(Level.INFO,"Error on POST");
         }
     }
 
@@ -31,8 +35,6 @@ public class HTTPHandler implements HttpHandler {
             sb.append((char) i);
         }
 
-        System.out.println(sb.toString());
-
         //Create Json object
         JSONObject json = new JSONObject(sb.toString());
 
@@ -43,11 +45,13 @@ public class HTTPHandler implements HttpHandler {
 
         //Create new Batch object
         Batch b = new Batch(id, type, speed, amt);
+        LOGGER.log(Level.INFO,b.toString());
 
         try {
             BatchHandler.getInstance().startBatch(b);
         } catch (ExecutionException | InterruptedException executionException) {
             executionException.printStackTrace();
+            LOGGER.log(Level.WARNING,"Error starting batch");
         }
     }
 }

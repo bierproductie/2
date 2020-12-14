@@ -21,8 +21,9 @@ public class BatchData {
     @SerializedName("rejected")
     private int rejected;
 
-    public BatchData(int batchId) {
+    public BatchData(int batchId, int state) {
         this.batchId = batchId;
+        this.state = state;
     }
 
     public void setMsTime(String msTime) {
