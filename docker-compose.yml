@@ -1,0 +1,18 @@
+version: "3.7"
+
+services: 
+  opc_ua_client:
+    container_name: bierproductie_opc_ua_client
+    build: 
+      context: .
+      dockerfile: docker/Dockerfile
+    env_file:
+      - .env
+    ports:
+        - 8001:8001
+    depends_on:
+        - simulator
+    command: java -jar target/opc_ua_client-0.0.1.jar
+  simulator:
+    container_name: simulator
+    image: registry.nymann.dev/bierproductie/simulator:onbuild
