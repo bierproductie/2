@@ -15,5 +15,6 @@ class CommandsTest {
     @Test
     void getOrdinal() {
         assertEquals(Commands.RESET,Commands.getCommand("Reset"));
+        assertEquals(Commands.ZERO,Commands.getCommand("Potato"));
     }
 }
