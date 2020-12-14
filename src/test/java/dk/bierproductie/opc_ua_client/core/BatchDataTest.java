@@ -11,7 +11,7 @@ class BatchDataTest {
 
     @BeforeAll
     static void setup() {
-        batchData = new BatchData(1, DataCollector.getInstance().readMachineState(false));
+        batchData = new BatchData(1, 4);
         assertEquals(1,batchData.getBatchId());
     }
 

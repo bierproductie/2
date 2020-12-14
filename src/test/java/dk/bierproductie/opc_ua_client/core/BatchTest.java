@@ -20,9 +20,9 @@ class BatchTest {
     @Test
     void wrongSpeed(){
         Batch testBatch = new Batch(1, Products.PILSNER, 800, 1000);
-        assertEquals(0, testBatch.getMachineSpeed());
+        assertEquals(Products.PILSNER.speedLimit, testBatch.getMachineSpeed());
         testBatch = new Batch(1, Products.PILSNER, -100, 1000);
-        assertEquals(0, testBatch.getMachineSpeed());
+        assertEquals(Products.PILSNER.speedLimit, testBatch.getMachineSpeed());
     }
 
     @Test
