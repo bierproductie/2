@@ -23,7 +23,7 @@
         **/core/DataCollector.java,
         **/core/DataWriter.java,
         **/core/Subscription.java,
-        **/core/OpcUaClient2.java,
+        **/core/HTTPServer.java,
         **/RunOpcUaClient.java,
         **/CLI.java,
         **/CLIFormatter.java,

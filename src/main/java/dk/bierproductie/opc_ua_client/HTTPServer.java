@@ -1,7 +1,6 @@
 package dk.bierproductie.opc_ua_client;
 
 import com.sun.net.httpserver.HttpServer;
-import com.sun.xml.bind.v2.model.core.LeafInfo;
 import dk.bierproductie.opc_ua_client.handlers.HTTPCMDHandler;
 import dk.bierproductie.opc_ua_client.handlers.HTTPHandler;
 import dk.bierproductie.opc_ua_client.handlers.HandlerFactory;
@@ -33,7 +32,7 @@ public class HTTPServer {
             server.start();
             LOGGER.log(Level.INFO, "Server started.");
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, e.toString());
         }
     }
 }

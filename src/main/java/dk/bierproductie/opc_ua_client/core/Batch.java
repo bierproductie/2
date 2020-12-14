@@ -2,10 +2,7 @@ package dk.bierproductie.opc_ua_client.core;
 
 import com.google.gson.Gson;
 import dk.bierproductie.opc_ua_client.enums.Products;
-import org.eclipse.milo.opcua.stack.core.types.builtin.DateTime;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

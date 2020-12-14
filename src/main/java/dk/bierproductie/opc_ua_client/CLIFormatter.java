@@ -12,7 +12,7 @@ public class CLIFormatter extends Formatter {
 
     @Override
     public String format(LogRecord record) {
-        if (record.getLevel() == Level.WARNING){
+        if (record.getLevel() == Level.WARNING) {
             return String.format("{%s} %s%s \n", record.getLevel(), formatMessage(record), ANSI_RED);
         } else {
             return String.format("{%s} %s%s \n", record.getLevel(), formatMessage(record), ANSI_WHITE);

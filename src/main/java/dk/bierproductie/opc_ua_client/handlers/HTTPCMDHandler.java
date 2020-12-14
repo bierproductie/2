@@ -42,7 +42,7 @@ public class HTTPCMDHandler implements HttpHandler {
         //Create Json object
         JSONObject json = new JSONObject(sb.toString());
         try {
-            Commands command = Commands.getOrdinal(json.getString("method"));
+            Commands command = Commands.getCommand(json.getString("method"));
             CommandHandler.getInstance().setCommand(command);
         } catch (ExecutionException | InterruptedException e) {
             LOGGER.log(Level.WARNING,"Error executing command");

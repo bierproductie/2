@@ -15,7 +15,7 @@ public enum Commands {
         this.output = output;
     }
 
-    public static Commands getOrdinal(String cmd) {
+    public static Commands getCommand(String cmd) {
         for (Commands command : Commands.values()){
             String output = command.output;
             if (output.equalsIgnoreCase(cmd)) {
