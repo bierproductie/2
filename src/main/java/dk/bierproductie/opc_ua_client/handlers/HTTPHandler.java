@@ -39,7 +39,7 @@ public class HTTPHandler implements HttpHandler {
         JSONObject json = new JSONObject(sb.toString());
 
         int id = json.getInt("id");
-        Products type = Products.values()[json.getInt("recipe")];
+        Products type = Products.getProduct(json.getString("recipe"));
         float speed = json.getFloat("speed");
         float amt = json.getFloat("amount_to_produce");
 

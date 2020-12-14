@@ -1,7 +1,7 @@
 package dk.bierproductie.opc_ua_client.enums;
 
 public enum Products {
-    
+
     PILSNER("Pilsner", 600),
     WHEAT("Wheat", 300),
     IPA("IPA", 150),
@@ -15,5 +15,14 @@ public enum Products {
     Products(String output, int speedLimit) {
         this.output = output;
         this.speedLimit = speedLimit;
+    }
+
+    public static Products getProduct(String name) {
+        for (Products product : Products.values()) {
+            if (name.equalsIgnoreCase(product.output)) {
+                return product;
+            }
+        }
+        return null;
     }
 }
