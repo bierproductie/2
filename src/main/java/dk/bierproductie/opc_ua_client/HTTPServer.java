@@ -1,5 +1,6 @@
 package dk.bierproductie.opc_ua_client;
 import com.sun.net.httpserver.HttpServer;
+import dk.bierproductie.opc_ua_client.handlers.HTTPCMDHandler;
 import dk.bierproductie.opc_ua_client.handlers.HTTPHandler;
 import dk.bierproductie.opc_ua_client.handlers.HandlerFactory;
 
@@ -11,6 +12,7 @@ public class HTTPServer {
         try{
             HttpServer server = HttpServer.create(new InetSocketAddress("localhost", 8001), 0);
             server.createContext("/batch", new HTTPHandler());
+            server.createContext("/command", new HTTPCMDHandler());
             HandlerFactory.getInstance(true);
             server.start();
             System.out.println("Server Started");

@@ -14,4 +14,13 @@ public enum Commands {
     Commands(String output) {
         this.output = output;
     }
+
+    public static Commands getOrdinal(String cmd) {
+        for (Commands command : Commands.values()){
+            if (command.output.toLowerCase().equals(cmd.toLowerCase())) {
+                return command;
+            }
+        }
+        return Commands.values()[0];
+    }
 }
