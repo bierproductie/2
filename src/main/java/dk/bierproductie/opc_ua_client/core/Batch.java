@@ -35,6 +35,7 @@ public class Batch {
             if (machineSpeed > 0 && machineSpeed <= maxMachineSpeed) {
                 this.machineSpeed = machineSpeed;
             } else {
+                this.machineSpeed = productType.speedLimit;
                 throw new IncorrectMachineSpeedException(String.format("Incorrect speed. It needs to be 0 < speed <= %d for the specific recipe", productType.speedLimit));
             }
         } catch (IncorrectMachineSpeedException e) {

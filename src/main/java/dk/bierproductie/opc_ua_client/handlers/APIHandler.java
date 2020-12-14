@@ -2,6 +2,7 @@ package dk.bierproductie.opc_ua_client.handlers;
 
 import com.squareup.okhttp.*;
 import dk.bierproductie.opc_ua_client.core.BatchData;
+import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -32,7 +33,7 @@ public class APIHandler {
         String json = batchData.toJson();
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
-                .url(apiUrl)
+                .url(apiUrl+"/data_over_time/")
                 .post(body)
                 .build();
         try {
@@ -48,7 +49,7 @@ public class APIHandler {
         String json = batchData.toJson();
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
-                .url(apiUrl)
+                .url(apiUrl+"/data_over_time")
                 .put(body)
                 .build();
         try {
@@ -60,5 +61,33 @@ public class APIHandler {
         }
     }
 
+    public void putMaintenanceValue (String data) {
+        RequestBody body = RequestBody.create(JSON, data);
+        Request request = new Request.Builder()
+                .url(apiUrl + "/maintenance/")
+                .put(body)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            String responseMsg = response.body().string();
+            LOGGER.log(Level.INFO, responseMsg);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void putInventoryStatus (String data, String name) {
+        RequestBody body = RequestBody.create(JSON, data);
+        Request request = new Request.Builder()
+                .url(apiUrl + "/inventory_statuses/" + name)
+                .put(body)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            String responseMsg = response.body().string();
+            LOGGER.log(Level.INFO, responseMsg);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

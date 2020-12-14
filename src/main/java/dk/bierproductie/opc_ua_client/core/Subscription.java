@@ -1,6 +1,8 @@
 package dk.bierproductie.opc_ua_client.core;
 
+import com.google.gson.Gson;
 import dk.bierproductie.opc_ua_client.enums.node_enums.AdminNodes;
+import dk.bierproductie.opc_ua_client.enums.node_enums.CommandNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.MachineNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.StatusNodes;
 import dk.bierproductie.opc_ua_client.handlers.BatchHandler;
@@ -47,13 +49,11 @@ public class Subscription implements Runnable {
     }
 
     public static void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
-        BatchData curBatchData = BatchHandler.getCurrentBatchData();
-        BatchData batchData = new BatchData(curBatchData.getBatchId());
-        copyData(curBatchData, batchData);
+        BatchData batchData = BatchHandler.getCurrentBatchData();
         Instant time = value.getSourceTime().getJavaInstant();
         if (dataMap.get(time) != null) {
             batchData = dataMap.get(time);
-            setValues(item, value, batchData); // ( •_•)>⌐■-■
+            setValues(item, value, batchData);
             APIHandler.getInstance().putData(batchData);
         } else {
             batchData.setMsTime(time.toString());
@@ -61,24 +61,14 @@ public class Subscription implements Runnable {
             dataMap.put(time, batchData);
             APIHandler.getInstance().postData(batchData);
         }
-        copyData(curBatchData, batchData);
     }
 
-    private static void copyData(BatchData curBatchData, BatchData batchData) {
-        batchData.setProduced(curBatchData.getProduced());
-        batchData.setRejected(curBatchData.getRejected());
-        batchData.setState(curBatchData.getState());
-        batchData.setVibration(curBatchData.getVibration());
-        batchData.setHumidity(curBatchData.getHumidity());
-        batchData.setTemperature(curBatchData.getTemperature());
-    }
 
     private static void setValues(UaMonitoredItem item, DataValue value, BatchData batchData) {
         if (item.getReadValueId().getNodeId() == StatusNodes.MACHINE_STATE.nodeId) {
-            MachineStateSubscription.handleData(item, value);
             int data = (int) value.getValue().getValue();
             batchData.setState(data);
-            System.out.println(data);
+            MachineStateSubscription.handleData(item, value);
         } else if (item.getReadValueId().getNodeId() == StatusNodes.TEMPERATURE.nodeId) {
             Float data = (Float) value.getValue().getValue();
             batchData.setTemperature(data);
@@ -102,7 +92,40 @@ public class Subscription implements Runnable {
     }
 
     public static void onConstantSubscriptionValue(UaMonitoredItem item, DataValue value) {
-        // to inventory and maintenance
+        if (item.getReadValueId().getNodeId() == MachineNodes.MAINTENANCE.nodeId) {
+            int val = (int) value.getValue().getValue();
+            String data = String.format("{\"value\": %d}", val);
+            APIHandler.getInstance().putMaintenanceValue(data);
+        } else if (item.getReadValueId().getNodeId() == MachineNodes.BARLEY.nodeId){
+            int val = (int) value.getValue().getValue();
+            String name = "barley";
+            String data = getFormat(val, name);
+            APIHandler.getInstance().putInventoryStatus(data,name);
+        } else if (item.getReadValueId().getNodeId() == MachineNodes.MALT.nodeId){
+            int val = (int) value.getValue().getValue();
+            String name = "malt";
+            String data = getFormat(val, name);
+            APIHandler.getInstance().putInventoryStatus(data, name);
+        }else if (item.getReadValueId().getNodeId() == MachineNodes.HOPS.nodeId){
+            int val = (int) value.getValue().getValue();
+            String name = "hops";
+            String data = getFormat(val, name);
+            APIHandler.getInstance().putInventoryStatus(data, name);
+        }else if (item.getReadValueId().getNodeId() == MachineNodes.WHEAT.nodeId){
+            int val = (int) value.getValue().getValue();
+            String name = "wheat";
+            String data = getFormat(val, name);
+            APIHandler.getInstance().putInventoryStatus(data, name);
+        }else if (item.getReadValueId().getNodeId() == MachineNodes.YEAST.nodeId){
+            int val = (int) value.getValue().getValue();
+            String name = "yeast";
+            String data = getFormat(val, name);
+            APIHandler.getInstance().putInventoryStatus(data, name);
+        }
+    }
+
+    private static String getFormat(int val, String name) {
+        return String.format("{\"name\": %s, \"current_value\": %d}", name, val);
     }
 
     public void subscribe() throws InterruptedException, ExecutionException {
@@ -161,7 +184,7 @@ public class Subscription implements Runnable {
         try {
             subscribe();
         } catch (InterruptedException | ExecutionException e) {
-            String msg = "hmmm";
+            String msg = "Error occurred while subscribing";
             LOGGER.log(Level.WARNING, msg);
             Thread.currentThread().interrupt();
         }

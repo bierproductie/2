@@ -20,7 +20,7 @@ public class HTTPCMDHandler implements HttpHandler {
         if(exchange.getRequestMethod().equals("POST")){
             handlePostRequest(exchange);
         } else {
-            System.err.println("Error");
+            LOGGER.log(Level.WARNING,"Error while posting Command");
         }
     }
 

@@ -45,11 +45,13 @@ public class HTTPHandler implements HttpHandler {
 
         //Create new Batch object
         Batch b = new Batch(id, type, speed, amt);
+        LOGGER.log(Level.INFO,b.toString());
 
         try {
             BatchHandler.getInstance().startBatch(b);
         } catch (ExecutionException | InterruptedException executionException) {
             executionException.printStackTrace();
+            LOGGER.log(Level.WARNING,"Error starting batch");
         }
     }
 }
