@@ -7,4 +7,4 @@ COPY . /usr/src/app
 
 RUN mvn clean install
 
-CMD ["java", "-jar", "target/opc_ua_client-0.0.1.jar"]
+ENTRYPOINT ["./docker/entrypoint.sh"]
