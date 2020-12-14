@@ -1,10 +1,12 @@
 package dk.bierproductie.opc_ua_client.core;
 
+import com.google.gson.Gson;
 import dk.bierproductie.opc_ua_client.enums.node_enums.AdminNodes;
+import dk.bierproductie.opc_ua_client.enums.node_enums.CommandNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.MachineNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.StatusNodes;
 import dk.bierproductie.opc_ua_client.handlers.BatchHandler;
-import dk.bierproductie.opc_ua_client.handlers.HTTPHandler;
+import dk.bierproductie.opc_ua_client.handlers.APIHandler;
 import dk.bierproductie.opc_ua_client.handlers.SubscriptionHandler;
 import dk.bierproductie.opc_ua_client.subscription_logic.MachineStateSubscription;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
@@ -23,7 +25,9 @@ import org.eclipse.milo.opcua.stack.core.types.structured.ReadValueId;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
@@ -33,9 +37,10 @@ import java.util.logging.Logger;
 public class Subscription implements Runnable {
     public static final AtomicLong clientHandles = new AtomicLong(1L);
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    public static Map<Instant, BatchData> dataMap = new HashMap<>();
     private final OpcUaClient client;
     private final NodeId nodeId;
-    private boolean constant;
+    private final boolean constant;
 
     public Subscription(OpcUaClient client, NodeId nodeId, boolean constant) {
         this.client = client;
@@ -44,39 +49,26 @@ public class Subscription implements Runnable {
     }
 
     public static void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
-        if (item.getReadValueId().getNodeId() == StatusNodes.MACHINE_STATE.nodeId) {
-            MachineStateSubscription.handleData(item, value);
-        } else if (item.getReadValueId().getNodeId() == StatusNodes.TEMPERATURE.nodeId) {
-            String msg = String.format("Temperature Subscription value received: item=%s, value=%s",
-                    item.getReadValueId().getNodeId(), value.getValue());
-            LOGGER.log(Level.INFO, msg);
-            Float data = (Float) value.getValue().getValue();
-            BatchHandler.getCurrentBatch().addToTempOverTime(value.getSourceTime(), data);
-        } else if (item.getReadValueId().getNodeId() == StatusNodes.HUMIDITY.nodeId) {
-            String msg = String.format("Humidity Subscription value received: item=%s, value=%s",
-                    item.getReadValueId().getNodeId(), value.getValue());
-            LOGGER.log(Level.INFO, msg);
-            BatchHandler.getCurrentBatch().addToHumOverTime(value.getSourceTime(), (Float) value.getValue().getValue());
-        } else if (item.getReadValueId().getNodeId() == StatusNodes.VIBRATION.nodeId) {
-            String msg = String.format("Vibration Subscription value received: item=%s, value=%s",
-                    item.getReadValueId().getNodeId(), value.getValue());
-            LOGGER.log(Level.INFO, msg);
-            Float data = (Float) value.getValue().getValue();
-            BatchHandler.getCurrentBatch().addToVibOverTime(value.getSourceTime(), data);
+        BatchData batchData = BatchHandler.getCurrentBatchData();
+        Instant time = value.getSourceTime().getJavaInstant();
+        if (dataMap.get(time) != null) {
+            batchData = dataMap.get(time);
+            setValues(item, value, batchData);
+            APIHandler.getInstance().putData(batchData);
         } else {
-            String msg = String.format("Subscription value received: item=%s, value=%s",
-                    item.getReadValueId().getNodeId(), value.getValue());
-            LOGGER.log(Level.INFO, msg);
+            batchData.setMsTime(time.toString());
+            setValues(item, value, batchData);
+            dataMap.put(time, batchData);
+            APIHandler.getInstance().postData(batchData);
         }
     }
 
-    public static void onConstantSubscriptionValue(UaMonitoredItem item, DataValue value) {
-        BatchData batchData = BatchHandler.getCurrentBatchData();
-        Instant time = value.getSourceTime().getJavaInstant();
-        batchData.setMsTime(time.toString());
+
+    private static void setValues(UaMonitoredItem item, DataValue value, BatchData batchData) {
         if (item.getReadValueId().getNodeId() == StatusNodes.MACHINE_STATE.nodeId) {
             int data = (int) value.getValue().getValue();
             batchData.setState(data);
+            MachineStateSubscription.handleData(item, value);
         } else if (item.getReadValueId().getNodeId() == StatusNodes.TEMPERATURE.nodeId) {
             Float data = (Float) value.getValue().getValue();
             batchData.setTemperature(data);
@@ -92,8 +84,48 @@ public class Subscription implements Runnable {
         } else if (item.getReadValueId().getNodeId() == AdminNodes.DEFECTIVE_PRODUCTS.nodeId) {
             int data = (int) value.getValue().getValue();
             batchData.setRejected(data);
+        } else {
+            String msg = String.format("Subscription value received: item=%s, value=%s",
+                    item.getReadValueId().getNodeId(), value.getValue());
+            LOGGER.log(Level.INFO, msg);
         }
-        HTTPHandler.getInstance().postData();
+    }
+
+    public static void onConstantSubscriptionValue(UaMonitoredItem item, DataValue value) {
+        if (item.getReadValueId().getNodeId() == MachineNodes.MAINTENANCE.nodeId) {
+            int val = (int) value.getValue().getValue();
+            String data = String.format("{\"value\": %d}", val);
+            APIHandler.getInstance().putMaintenanceValue(data);
+        } else if (item.getReadValueId().getNodeId() == MachineNodes.BARLEY.nodeId){
+            int val = (int) value.getValue().getValue();
+            String name = "barley";
+            String data = getFormat(val, name);
+            APIHandler.getInstance().putInventoryStatus(data,name);
+        } else if (item.getReadValueId().getNodeId() == MachineNodes.MALT.nodeId){
+            int val = (int) value.getValue().getValue();
+            String name = "malt";
+            String data = getFormat(val, name);
+            APIHandler.getInstance().putInventoryStatus(data, name);
+        }else if (item.getReadValueId().getNodeId() == MachineNodes.HOPS.nodeId){
+            int val = (int) value.getValue().getValue();
+            String name = "hops";
+            String data = getFormat(val, name);
+            APIHandler.getInstance().putInventoryStatus(data, name);
+        }else if (item.getReadValueId().getNodeId() == MachineNodes.WHEAT.nodeId){
+            int val = (int) value.getValue().getValue();
+            String name = "wheat";
+            String data = getFormat(val, name);
+            APIHandler.getInstance().putInventoryStatus(data, name);
+        }else if (item.getReadValueId().getNodeId() == MachineNodes.YEAST.nodeId){
+            int val = (int) value.getValue().getValue();
+            String name = "yeast";
+            String data = getFormat(val, name);
+            APIHandler.getInstance().putInventoryStatus(data, name);
+        }
+    }
+
+    private static String getFormat(int val, String name) {
+        return String.format("{\"name\": %s, \"current_value\": %d}", name, val);
     }
 
     public void subscribe() throws InterruptedException, ExecutionException {
@@ -116,7 +148,7 @@ public class Subscription implements Runnable {
         // setting the consumer after the subscription creation
         BiConsumer<UaMonitoredItem, Integer> onItemCreated;
 
-        if (!constant){
+        if (!constant) {
             // setting the consumer after the subscription creation
             onItemCreated = (item, id) -> item.setValueConsumer(Subscription::onSubscriptionValue);
         } else {
@@ -152,7 +184,7 @@ public class Subscription implements Runnable {
         try {
             subscribe();
         } catch (InterruptedException | ExecutionException e) {
-            String msg = "hmmm";
+            String msg = "Error occurred while subscribing";
             LOGGER.log(Level.WARNING, msg);
             Thread.currentThread().interrupt();
         }

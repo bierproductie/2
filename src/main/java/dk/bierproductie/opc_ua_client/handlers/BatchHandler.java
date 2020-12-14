@@ -7,6 +7,7 @@ import dk.bierproductie.opc_ua_client.core.DataWriter;
 import dk.bierproductie.opc_ua_client.enums.Commands;
 import dk.bierproductie.opc_ua_client.enums.node_enums.AdminNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.CommandNodes;
+import dk.bierproductie.opc_ua_client.enums.node_enums.MachineNodes;
 import dk.bierproductie.opc_ua_client.enums.node_enums.StatusNodes;
 
 import java.util.concurrent.ExecutionException;
@@ -37,6 +38,11 @@ public final class BatchHandler {
         currentBatch.setAmountProduced((int) DataCollector.getInstance().readData("produced", AdminNodes.PRODUCED_PRODUCTS.nodeId, false));
         currentBatch.setDefectiveProducts((int) DataCollector.getInstance().readData("defective", AdminNodes.DEFECTIVE_PRODUCTS.nodeId, false));
         currentBatch.setOee();
+        try {
+            CommandHandler.getInstance().setCommand(Commands.RESET);
+        } catch (ExecutionException | InterruptedException e) {
+            LOGGER.log(Level.WARNING,"Error while resetting after batch completed");
+        }
         String msg = currentBatch.toString();
         LOGGER.log(Level.INFO, msg);
     }
@@ -65,7 +71,7 @@ public final class BatchHandler {
         if (batch.isRunning() || dataCollector.readMachineState(false) != 4 && dataCollector.readMachineState(false) != 17) {
             LOGGER.log(Level.WARNING, "Another batch is already running");
         } else {
-            currentBatchData = new BatchData((int) batch.getId());
+            currentBatchData = new BatchData((int) batch.getId(), DataCollector.getInstance().readMachineState(false));
             commandHandler.setCommand(Commands.RESET);
             Thread.sleep(1000);
             setCurrentBatch(batch);
@@ -84,15 +90,17 @@ public final class BatchHandler {
         subscriptionHandler.subscribe(StatusNodes.TEMPERATURE.nodeId,false);
         subscriptionHandler.subscribe(StatusNodes.HUMIDITY.nodeId,false);
         subscriptionHandler.subscribe(StatusNodes.VIBRATION.nodeId,false);
+        subscriptionHandler.subscribe(StatusNodes.TEMPERATURE.nodeId, false);
+        subscriptionHandler.subscribe(AdminNodes.DEFECTIVE_PRODUCTS.nodeId,false);
+        subscriptionHandler.subscribe(AdminNodes.PRODUCED_PRODUCTS.nodeId,false);
     }
 
     public void setupConstantSubscriptions() {
-        subscriptionHandler.subscribe(StatusNodes.TEMPERATURE.nodeId, true);
-        subscriptionHandler.subscribe(StatusNodes.MACHINE_STATE.nodeId,true);
-        subscriptionHandler.subscribe(StatusNodes.HUMIDITY.nodeId,true);
-        subscriptionHandler.subscribe(StatusNodes.VIBRATION.nodeId,true);
-        subscriptionHandler.subscribe(AdminNodes.DEFECTIVE_PRODUCTS.nodeId,true);
-        subscriptionHandler.subscribe(AdminNodes.PRODUCED_PRODUCTS.nodeId,true);
+        subscriptionHandler.subscribe(MachineNodes.MAINTENANCE.nodeId,true);
+        subscriptionHandler.subscribe(MachineNodes.BARLEY.nodeId,true);
+        subscriptionHandler.subscribe(MachineNodes.MALT.nodeId,true);
+        subscriptionHandler.subscribe(MachineNodes.HOPS.nodeId,true);
+        subscriptionHandler.subscribe(MachineNodes.WHEAT.nodeId,true);
+        subscriptionHandler.subscribe(MachineNodes.YEAST.nodeId,true);
     }
-
 }

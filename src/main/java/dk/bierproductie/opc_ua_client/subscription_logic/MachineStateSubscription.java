@@ -21,8 +21,6 @@ public class MachineStateSubscription {
     public static void handleData(UaMonitoredItem item, DataValue value) {
         Batch currentBatch = BatchHandler.getCurrentBatch();
         int stateInt = (int) value.getValue().getValue();
-        String state = Objects.requireNonNull(MachineState.getStateFromValue(stateInt)).output;
-        setStateDuration(value, state);
         if (stateInt == 4) {
             currentBatch.setStateStartTime(Objects.requireNonNull(value.getSourceTime()).getJavaTime());
         }
@@ -36,19 +34,13 @@ public class MachineStateSubscription {
             BatchHandler.finishBatch();
             currentBatch.setRunning(false);
         }
-        logData(item, value, state);
+        logData(item, value);
     }
 
-    private static void logData(UaMonitoredItem item, DataValue value, String state) {
+    private static void logData(UaMonitoredItem item, DataValue value) {
         String msg = String.format("MachineState Subscription value received: item=%s, value=%s, prettyValue=%s",
-                item.getReadValueId().getNodeId(), value.getValue(), state);
+                item.getReadValueId().getNodeId(), value.getValue());
         LOGGER.log(Level.INFO, msg);
     }
-
-    private static void setStateDuration(DataValue value, String state) {
-        long stateChangeTime = value.getSourceTime().getJavaTime();
-        BatchHandler.getCurrentBatch().addStateChangeDuration(stateChangeTime, state);
-    }
-
 
 }

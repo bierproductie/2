@@ -21,7 +21,7 @@ public class CLI {
         String[] cmd = command.toLowerCase().split(" ");
         String msg = "";
         switch (cmd[0]) {
-            case "batch":
+            case "batch" -> {
                 LOGGER.log(Level.INFO, "Run on simulator? [Y/n]");
                 String resp = scanner.nextLine();
                 boolean isSimulator = resp.isEmpty();
@@ -70,14 +70,14 @@ public class CLI {
                     LOGGER.log(Level.INFO, "Restarting batch creation process");
                     handleCommand("Batch");
                 }
-                break;
-            case "help":
+            }
+            case "help" -> {
                 LOGGER.log(Level.INFO, "Commands:");
                 for (String str : commands) {
                     LOGGER.log(Level.INFO, str);
                 }
-                break;
-            case "dino":
+            }
+            case "dino" -> {
                 msg = "                 \n" +
                         "               __\n" +
                         "              / _)\n" +
@@ -86,13 +86,12 @@ public class CLI {
                         " __/ (  | (  |\n" +
                         "/__.-'|_|--|_|";
                 LOGGER.log(Level.INFO, msg);
-                break;
-            case "quit":
-                System.exit(0);
-                break;
-            default:
+            }
+            case "quit" -> System.exit(0);
+            default -> {
                 LOGGER.log(Level.INFO, "Command not recognized");
                 handleCommand("help");
+            }
         }
         getCommand();
     }
